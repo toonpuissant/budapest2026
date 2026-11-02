@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#15263A">
+<title>Boedapest met Amelie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: één scherm per dag, vaste dagkiezer bovenaan, tijdlijn van kaarten of een kaart; Praktisch als aparte weergave. */
+:root{
+  --bg:#F2EFEA; --card:#FFFFFF; --line:#E6E2DB; --line2:#D8D4CC;
+  --ink:#15263A; --muted:#5A6778; --chip:#E3E6EA; --chip-ink:#3A4A5C;
+  --navy:#15263A; --navy-ink:#F2EFEA;
+  --paprika:#C94A2C; --gold:#D9A62B; --gold-bg:#FBE9C4; --gold-ink:#6B4E06; --teal:#2E6E7E;
+  --display:'Bricolage Grotesque',system-ui,sans-serif; --body:Inter,system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111A26; --card:#1B2634; --line:#2A3645; --line2:#34425380; --ink:#EEF0F2; --muted:#A7B1BD; --chip:#283443; --chip-ink:#C9D1DA;
+    --navy:#0C141E; --navy-ink:#EEF0F2; --paprika:#E0623F; --gold:#E3B23C; --gold-bg:#3B2F12; --gold-ink:#F2D27B; --teal:#5FB0C2; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111A26; --card:#1B2634; --line:#2A3645; --line2:#34425380; --ink:#EEF0F2; --muted:#A7B1BD; --chip:#283443; --chip-ink:#C9D1DA;
+  --navy:#0C141E; --navy-ink:#EEF0F2; --paprika:#E0623F; --gold:#E3B23C; --gold-bg:#3B2F12; --gold-ink:#F2D27B; --teal:#5FB0C2; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--navy);z-index:30}
+a{color:var(--ink)}
+button{font-family:var(--body)}
+.wrap{max-width:560px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-0.01em}
+
+/* Kop */
+header{position:sticky;top:0;z-index:20;background:var(--navy);color:var(--navy-ink);padding-top:env(safe-area-inset-top,0px)}
+.hd{padding-block:14px 12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:12px}
+.hd-top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.hd h1{font-size:26px;font-weight:800;line-height:1.05}
+.iconbtn{width:44px;height:44px;border-radius:22px;border:1.5px solid rgba(242,239,234,.35);background:transparent;color:var(--navy-ink);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;text-decoration:none}
+.iconbtn[aria-pressed="true"]{background:var(--paprika);border-color:var(--paprika);color:#fff}
+.tabs{display:flex;gap:6px}
+.tab{flex:1;height:50px;border-radius:12px;border:1px solid rgba(242,239,234,.25);background:transparent;color:var(--navy-ink);font-weight:600;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer}
+.tab small{font-size:11px;font-weight:500;opacity:.7}
+.tab[aria-selected="true"]{background:var(--paprika);border-color:var(--paprika);color:#fff}
+.tab[aria-selected="true"] small{opacity:.9}
+.tab:focus-visible,.iconbtn:focus-visible,.seg button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* Dagkop */
+.main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 40px;display:flex;flex-direction:column;gap:14px}
+.dayhead{display:flex;flex-direction:column;gap:10px}
+.dayhead h2{font-size:24px;font-weight:700}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--chip);color:var(--chip-ink);font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.pill.sun{background:var(--gold-bg);color:var(--gold-ink)}
+.seg{display:flex;background:var(--chip);border-radius:12px;padding:3px;gap:3px}
+.seg button{flex:1;height:40px;border:0;border-radius:9px;background:transparent;color:var(--chip-ink);font-weight:600;font-size:14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+/* Tijdlijn */
+.tl{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:12px;align-items:stretch}
+.when{width:44px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:14px}
+.when b{font-size:13px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.when i{flex:1;width:2px;background:var(--line2);border-radius:1px}
+.when i.dash{background:repeating-linear-gradient(to bottom,var(--line2) 0 4px,transparent 4px 8px)}
+.card{flex:1;min-width:0;background:var(--card);border-radius:14px;border:1px solid var(--line);overflow:hidden}
+.card.hl{border:1.5px solid var(--paprika)}
+.card.opt{border-style:dashed}
+.card-btn{width:100%;text-align:left;background:transparent;border:0;color:inherit;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;font-size:inherit}
+.card-btn:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+.ttl{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ttl h3{font-size:17px;font-weight:700;line-height:1.2}
+.badge{flex-shrink:0;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.badge.hl{background:var(--paprika);color:#fff}
+.badge.today{background:var(--gold);color:#15263A}
+.badge.opt{background:var(--chip);color:var(--chip-ink)}
+.desc{font-size:13px;color:var(--muted);line-height:1.45;margin:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{padding:4px 8px;border-radius:6px;background:var(--chip);color:var(--chip-ink);font-size:11px;font-weight:600}
+.chip.alt{background:transparent;border:1px solid var(--teal);color:var(--teal)}
+.chip.todo{background:var(--gold-bg);color:var(--gold-ink)}
+.travel{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--muted);padding:0 0 2px 56px;line-height:1.4}
+.travel svg{flex-shrink:0;margin-top:1px}
+
+/* Open kaart */
+.more{border-top:1px solid var(--line);padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px}
+.more p{margin:0;font-size:14px;line-height:1.55}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.fact{background:var(--bg);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.fact span{font-size:13px;font-weight:600}
+.more h4{font-family:var(--display);font-size:16px;font-weight:700;margin:0}
+.alts{display:flex;flex-direction:column;gap:8px}
+.alt{display:flex;gap:12px;align-items:flex-start;background:var(--bg);border-radius:12px;padding:12px 14px;border:1px solid var(--line);cursor:pointer}
+.alt.on{border:1.5px solid var(--paprika)}
+.alt input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--paprika);flex-shrink:0}
+.alt b{font-size:14px;font-weight:600;display:block}
+.alt span{font-size:13px;color:var(--muted);line-height:1.45}
+.links{display:flex;flex-direction:column;gap:6px}
+.lnk{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg);border-radius:10px;padding:11px 14px;border:1px solid var(--line);text-decoration:none;color:var(--ink);font-size:14px;font-weight:500;min-height:44px}
+.lnk.nav{background:var(--teal);border-color:var(--teal);color:#fff}
+.lnk svg{flex-shrink:0}
+
+/* Kaart */
+.mapwrap{display:flex;flex-direction:column;gap:10px}
+#map{height:min(62vh,560px);border-radius:14px;border:1px solid var(--line);background:var(--chip)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:22px;height:0;border-top:3px solid var(--paprika)}
+.legend i.d{border-top-style:dashed;border-color:var(--teal)}
+.legend b{display:inline-block;width:14px;height:14px;border-radius:7px;background:var(--navy);border:2px solid #fff;box-shadow:0 0 0 1px var(--navy)}
+.maplist{display:flex;flex-direction:column;gap:6px}
+.mapitem{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;text-align:left;color:inherit;font-size:14px;min-height:44px}
+.num{width:26px;height:26px;border-radius:13px;background:var(--paprika);color:#fff;font-weight:700;font-size:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-variant-numeric:tabular-nums}
+.num.h{background:var(--navy)}
+.mk{width:30px;height:30px;border-radius:15px;background:var(--paprika);color:#fff;font:700 13px/30px var(--body);text-align:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.mk.h{background:#15263A;font-size:11px}
+.leaflet-popup-content b{font-family:var(--display);font-size:14px}
+.leaflet-popup-content{color:#15263A}
+.note{font-size:12px;color:var(--muted)}
+
+/* Praktisch */
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec h3{font-size:18px;font-weight:700}
+.list{background:var(--card);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;overflow:hidden}
+.list>*{border-bottom:1px solid var(--line)}
+.list>*:last-child{border-bottom:0}
+.chk{display:flex;gap:12px;align-items:center;padding:12px 16px;min-height:44px;cursor:pointer}
+.chk input{width:20px;height:20px;margin:0;accent-color:var(--teal);flex-shrink:0}
+.chk .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.chk b{font-size:14px;font-weight:600}
+.chk.done b{text-decoration:line-through;color:var(--muted)}
+.chk small{font-size:12px;color:var(--muted)}
+.chk a{font-size:12px;color:var(--teal);font-weight:600;text-decoration:none;white-space:nowrap}
+.addr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;text-decoration:none;color:var(--ink);min-height:44px}
+.addr b{font-size:14px;font-weight:600;display:block}
+.addr small{font-size:12px;color:var(--muted)}
+.txt{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.5}
+.txt p{margin:0}
+footer{padding:24px 16px 40px;text-align:center;font-size:12px;color:var(--muted)}
+footer a{color:var(--teal)}
+.hidden{display:none!important}
+@media (prefers-reduced-motion:no-preference){.more{animation:open .18s ease-out}@keyframes open{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}}
+
+/* Leaflet (minimale subset, inline zodat de pagina zonder externe CSS werkt) */
+.leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane>svg,.leaflet-pane>canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}
+.leaflet-container{overflow:hidden;outline-offset:1px;font-family:var(--body);touch-action:none;-webkit-tap-highlight-color:transparent}
+.leaflet-container img{max-width:none!important}
+.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow{-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+.leaflet-tile{visibility:hidden}.leaflet-tile-loaded{visibility:inherit}
+.leaflet-zoom-box{width:0;height:0;z-index:800}
+.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}
+.leaflet-map-pane canvas{z-index:100}.leaflet-map-pane svg{z-index:200}
+.leaflet-control{position:relative;z-index:800;pointer-events:auto;float:left;clear:both}
+.leaflet-top,.leaflet-bottom{position:absolute;z-index:1000;pointer-events:none}
+.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}
+.leaflet-right .leaflet-control{float:right}
+.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}
+.leaflet-zoom-anim .leaflet-zoom-animated{transition:transform .25s cubic-bezier(0,0,.25,1)}
+.leaflet-zoom-anim .leaflet-tile,.leaflet-pan-anim .leaflet-tile{transition:none}
+.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}
+.leaflet-interactive{cursor:pointer}.leaflet-grab{cursor:grab}.leaflet-dragging .leaflet-grab{cursor:grabbing}
+.leaflet-marker-icon.leaflet-interactive,.leaflet-image-layer.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive{pointer-events:auto}
+.leaflet-bar{box-shadow:0 1px 5px rgba(0,0,0,.3);border-radius:8px;overflow:hidden}
+.leaflet-bar a{background:#fff;border-bottom:1px solid #ccc;width:36px;height:36px;line-height:36px;display:block;text-align:center;text-decoration:none;color:#15263A;font:bold 18px/36px var(--body)}
+.leaflet-bar a:last-child{border-bottom:none}
+.leaflet-control-attribution{background:rgba(255,255,255,.8);margin:0;padding:0 5px;font-size:10px;color:#333;line-height:1.4}
+.leaflet-control-attribution a{color:#2E6E7E}
+.leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}
+.leaflet-popup-content-wrapper{padding:1px;text-align:left;border-radius:12px}
+.leaflet-popup-content{margin:12px 24px 12px 16px;line-height:1.4;font-size:13px;min-height:1px}
+.leaflet-popup-tip-container{width:40px;height:20px;position:absolute;left:50%;margin-top:-1px;margin-left:-20px;overflow:hidden;pointer-events:none}
+.leaflet-popup-tip{width:17px;height:17px;padding:1px;margin:-10px auto 0;transform:rotate(45deg)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#15263A;box-shadow:0 3px 14px rgba(0,0,0,.35)}
+.leaflet-container a.leaflet-popup-close-button{position:absolute;top:0;right:0;border:none;text-align:center;width:28px;height:28px;font:16px/28px sans-serif;color:#757575;text-decoration:none;background:transparent}
+.leaflet-div-icon{background:transparent;border:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap hd">
+    <div class="hd-top">
+      <div>
+        <div class="eyebrow">5 – 8 november 2026</div>
+        <h1>Boedapest<br>met Amelie</h1>
+      </div>
+      <button class="iconbtn" id="btnPrak" aria-label="Praktisch" aria-pressed="false" title="Praktisch">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16"></line><circle cx="12" cy="8" r="0.6"></circle></svg>
+      </button>
+    </div>
+    <div class="tabs" role="tablist" id="tabs"></div>
+  </div>
+</header>
+
+<main class="wrap main" id="main"></main>
+
+<footer>Routes op de kaart: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · routering <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noopener">FOSSGIS</a>. Tijden zijn richttijden; kies gerust een alternatief, de keuze wordt op deze telefoon bewaard.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* ================= DATA ================= */
+const HOTEL = {name:'Harmonia Palace', addr:'Múzeum utca 9', ll:[47.4906,19.0628]};
+const AMELIE = {name:'Amelie', addr:'Baross utca 45', ll:[47.4887,19.0708]};
+
+const gm = (ll) => `https://www.google.com/maps/dir/?api=1&destination=${ll[0]},${ll[1]}&travelmode=walking`;
+const gmt = (ll) => `https://www.google.com/maps/dir/?api=1&destination=${ll[0]},${ll[1]}&travelmode=transit`;
+
+/* mode: walk = wandelroute op de kaart, transit = stippellijn (metro/tram/bus), label = hoe je er komt vanaf de vorige stop */
+const DAYS = [
+{ id:'do', short:'Do', date:'5 nov', title:'Donderdag · Buda in de zon', weather:'Zonnig · ± 9 °C', sunset:'16:25',
+  ret:{mode:'walk', label:'5–10 min lopen terug naar het hotel'},
+  slots:[
+  { id:'do1', time:'13:00', title:'Landing & bus 100E naar de stad', ll:[47.4893,19.0618],
+    desc:'Vanaf de terminal met de 100E Airport Express; uitstappen aan Kálvin tér (31 min), 3 min naar het hotel.',
+    long:'Het 100E-ticket (2 200 Ft p.p.) koop je in BudapestGO en activeer je vóór het instappen. Kálvin tér is in deze richting een uitstaphalte: wie wil doorrijden tot Deák, kan dat ook, maar Kálvin ligt pal bij het hotel.',
+    facts:[['Vervoer','100E · elke 10 min'],['Duur','± 31 min'],['Ticket','2 200 Ft p.p.'],['Halte','Kálvin tér M']],
+    links:[['Bus 100E · dienstregeling','https://bkk.hu/en/tickets-and-passes/budapestgo/'],['Bus 100E · alle haltes','https://en.wikipedia.org/wiki/Budapest_bus_route_100E']] },
+  { id:'do2', time:'14:15', title:'Hotel: bagage droppen & snelle hap', ll:HOTEL.ll, travel:{mode:'walk', label:'3 min lopen van Kálvin tér'},
+    desc:'Check-in vanaf 14:00. Daarna iets kleins eten in de buurt; de echte lunch vervalt vandaag.',
+    long:'Hou het kort: om 15:15 willen jullie op de Burchtheuvel staan. Alles hieronder ligt binnen 5 minuten van de deur.',
+    facts:[['Check-in','vanaf 14:00'],['Uitchecken zondag','vóór 10:00']],
+    alts:[
+      {id:'a', title:'Auguszt a Múzeumkertben', text:'Cukrászda in de museumtuin, pal naast het hotel. Broodje, taart, goede koffie.', ll:[47.4908,19.0615]},
+      {id:'b', title:'Fecske Presszó', text:'Bistro op Baross utca 10, de buurt van Amelie. Snelle lunchgerechten, lokaal publiek.', ll:[47.4886,19.0652]},
+      {id:'c', title:'Lángos in de Grote Markthal', text:'10 min lopen; bovenverdieping. Alleen als jullie snel zijn, de markthal komt zaterdag sowieso terug.', ll:[47.4870,19.0590]}],
+    links:[['Harmonia Palace op Google Maps','https://www.google.com/maps/search/?api=1&query=Harmonia+Palace+Múzeum+utca+9+Budapest'],['Auguszt a Múzeumkertben op Google Maps','https://www.google.com/maps/search/?api=1&query=Auguszt+a+Múzeumkertben+Budapest']] },
+  { id:'do3', time:'15:15', title:'Matthiaskerk & Vissersbastion', ll:[47.5020,19.0346], badge:'hl', travel:{mode:'transit', label:'M3 Kálvin tér → Deák Ferenc tér (1 halte), daar bus 16 → Szentháromság tér · ± 25 min'},
+    desc:'Eerst de kerk (sluit 17:00), dan naar buiten voor het gouden uur: het Parlement aan de overkant kleurt mee met de zon.',
+    long:'De onderste terrassen van het bastion zijn gratis en geven hetzelfde zicht; de bovenste torens kosten ± 1 700 Ft tot 19:00. Blijf tot na 16:25 voor het blauwe uur, dan gaan de lichten van het Parlement aan.',
+    facts:[['Vervoer','M3 + bus 16'],['Duur','± 1,5 u'],['Kerk','tot 17:00, ticket aan de kassa'],['Bastion','gratis onder, ± 1 700 Ft boven']],
+    alts:[
+      {id:'a', title:'Basisplan: bus 16 tot boven', text:'Rechtstreeks naar Szentháromság tér, meteen bij de kerk. Meeste zon, minste gedoe.'},
+      {id:'b', title:'Met de Burchtkabelbaan (Sikló) omhoog', text:'M3 → Deák, dan te voet over de Kettingbrug naar Clark Ádám tér en met de kabelbaan omhoog. Mooi, wel een wachtrij en ± 4 000 Ft p.p.; 20 min langer.', ll:[47.4980,19.0400]},
+      {id:'c', title:'Koffie bij Ruszwurm na de kerk', text:'Oudste banketbakkerij van Buda, 50 m van de kerk; krémes nemen. Bastion dan pas daarna.'}],
+    links:[['Matthiaskerk · officiële site','https://matyas-templom.hu/en'],['Vissersbastion · uren & torens','https://thebettervacation.com/budapest/fishermans-bastion/'],['Burchtkabelbaan (Sikló)','https://en.wikipedia.org/wiki/Budapest_Castle_Hill_Funicular']] },
+  { id:'do4', time:'17:00', title:'Buda Castle & Kettingbrug te voet', ll:[47.4968,19.0392], travel:{mode:'walk', label:'600 m zuidwaarts door de burchtwijk'},
+    desc:'De binnenplaatsen van het paleis zijn vrij toegankelijk; daarna afdalen naar de verlichte Kettingbrug en te voet naar Pest.',
+    long:'Vanaf het terras bij de Savoyaanse ruiter (Eugenius van Savoye) heb je de hele Pest-oever voor je. Afdalen kan via de trappen naast de kabelbaan of door de Várkert Bazár. Over de brug naar Széchenyi tér, dan tram 2 langs de Donau naar Fővám tér.',
+    facts:[['Toegang','binnenplaatsen gratis'],['Wandeling','± 2 km'],['Terug','tram 2 → Fővám tér']],
+    alts:[
+      {id:'a', title:'Te voet omlaag via de Várkert Bazár', text:'Monumentale trappen en tuinen aan de Donau-kant, vlak bij de brug.'},
+      {id:'b', title:'Met de Sikló omlaag', text:'Als jullie de kabelbaan nog niet genomen hebben: afdalen kost minder wachttijd dan opstijgen.'}],
+    links:[['Buda Castle · bezoekersinfo','https://budacastlebudapest.com'],['Várkert Bazár','https://varkertbazar.hu/en'],['Kettingbrug','https://en.wikipedia.org/wiki/Sz%C3%A9chenyi_Chain_Bridge']] },
+  { id:'do5', time:'18:30', title:'Ervin Szabó-bibliotheek', ll:[47.4894,19.0645], badge:'today', travel:{mode:'transit', label:'Kettingbrug over, tram 2 Széchenyi tér → Fővám tér (8 min), 6 min lopen'},
+    desc:'Neobarok paleis vol lezende studenten. Alleen op donderdag tot 20:00 open, dus vandaag of nooit.',
+    long:'Toeristenticket aan de balie (± 1 500–2 000 Ft), je krijgt een papieren ticket voor de tourniquets. De mooiste zalen zijn op de verdieping: de spiegelzaal en de rookkamer met eiken lambrisering. Stil zijn, mensen werken er echt.',
+    facts:[['Open','do tot 20:00'],['Ticket','± 2 000 Ft aan de balie'],['Afstand','5 min van het hotel']],
+    links:[['Bibliotheek · info voor toeristen','https://fszek.hu/en/rolunk/egyeni-es-csoportos-turistaknak'],['Fotoreportage & tips','https://thirdeyetraveller.com/metropolitan-ervin-szabo-library-budapest/']] },
+  { id:'do6', time:'19:45', title:'Diner in de Paleiswijk', ll:[47.4975,19.0640], travel:{mode:'walk', label:'10 min lopen'}, todo:'Reserveren',
+    desc:'Studentenbuurt met goede, betaalbare Hongaarse keuken. Reserveer: op vrijdag en zaterdag zit alles vol.',
+    long:'Kies hieronder, de kaart verspringt mee. Gettó Gulyás is de klassieker (pörkölt, nokedli) op 10 min lopen; Pata Negra zit letterlijk naast het hotel.',
+    facts:[['Reserveren','ja, vandaag nog'],['Budget','± 8 000–12 000 Ft p.p.']],
+    alts:[
+      {id:'a', title:'Gettó Gulyás', text:'Wesselényi utca 18. Hongaarse klassiekers in een vrolijk, luid lokaal. 10 min lopen.', ll:[47.4975,19.0640]},
+      {id:'b', title:'Pata Negra', text:'Kálvin tér 8, naast het hotel. Spaanse tapas, altijd druk, goed voor een lange avond.', ll:[47.4893,19.0630]},
+      {id:'c', title:'Rosenstein', text:'Mosonyi utca 3, bij station Keleti. Joods-Hongaarse familiekeuken, een instituut. 20 min lopen of M4 → Keleti.', ll:[47.4997,19.0812]},
+      {id:'d', title:'Café Csiga', text:'Vásár utca 2, bij Rákóczi tér. Buurtcafé-restaurant, Amelie’s terrein, ontspannen prijzen.', ll:[47.4897,19.0735]}],
+    links:[['Gettó Gulyás op Google Maps','https://www.google.com/maps/search/?api=1&query=Gettó+Gulyás+Wesselényi+utca+18+Budapest'],['Pata Negra op Google Maps','https://www.google.com/maps/search/?api=1&query=Pata+Negra+Kálvin+tér+8+Budapest'],['Rosenstein op Google Maps','https://www.google.com/maps/search/?api=1&query=Rosenstein+Vendéglő+Mosonyi+utca+3+Budapest'],['Café Csiga op Google Maps','https://www.google.com/maps/search/?api=1&query=Café+Csiga+Vásár+utca+2+Budapest']] }
+]},
+{ id:'vr', short:'Vr', date:'6 nov', title:'Vrijdag · Pest langs de Donau', weather:'Zonnig · fris, 0–10 °C', sunset:'16:24',
+  ret:{mode:'walk', label:'17 min lopen door Váci utca, of tram 2 Vigadó tér → Fővám tér'},
+  slots:[
+  { id:'vr1', time:'09:30', title:'Ontbijt bij MERON', ll:[47.4906,19.0599],
+    desc:'Tip van Amelie: specialty coffee en brunch op Kecskeméti utca 8, 4 minuten van het hotel. Om 10:15 vertrekken, de tram is 10 minuten.',
+    alts:[
+      {id:'m', title:'MERON Egyetem tér', text:'Kecskeméti utca 8. Filterkoffie, eggs benedict, granola; het adres dat Amelie aanraadt.', ll:[47.4906,19.0599]},
+      {id:'a', title:'Auguszt a Múzeumkertben', text:'In de tuin van het Nationaal Museum, naast het hotel. Croissants, taart, espresso.', ll:[47.4908,19.0615]},
+      {id:'b', title:'Fekete', text:'Múzeum körút 5, 3 min lopen. Specialty coffee, ontbijtbowls en goede eggs benedict.', ll:[47.4925,19.0610]},
+      {id:'c', title:'Cirkusz Café', text:'Dob utca 25 in de Joodse wijk, 12 min lopen. Uitgebreid ontbijt, drukker.', ll:[47.4975,19.0625]}],
+    links:[['MERON op Google Maps','https://www.google.com/maps/search/?api=1&query=MERON+Specialty+Coffee+Brunch+Kecskeméti+utca+8+Budapest'],['Auguszt a Múzeumkertben op Google Maps','https://www.google.com/maps/search/?api=1&query=Auguszt+a+Múzeumkertben+Budapest'],['Fekete op Google Maps','https://www.google.com/maps/search/?api=1&query=Fekete+Múzeum+körút+5+Budapest']] },
+  { id:'vr2', time:'11:00', title:'Parlement (rondleiding)', ll:[47.5076,19.0462], badge:'hl', travel:{mode:'transit', label:'6 min lopen naar Fővám tér, tram 2 langs de Donau → Kossuth Lajos tér (10 min) · ± 18 min'},
+    desc:'Boek het slot van 11:00 en wees om 10:35 aan het bezoekerscentrum: reken 20–30 min voor de veiligheidscontrole, de rondleiding zelf duurt 45 min. Ticket op naam, identiteitskaart mee voor het EU-tarief.',
+    long:'Het bezoekerscentrum zit aan de noordkant van het gebouw, onder Kossuth tér. Tram 2 is de mooiste aanloop: de hele rit kijk je op de Burcht. Bij een zitting van het parlement kan de rondleiding uitvallen; de boeking toont dan geen slot.',
+    facts:[['Vervoer','tram 2 → Kossuth Lajos tér'],['Totaal','± 1,5 u incl. controle'],['Ticket','EU-tarief, ID tonen'],['Boeken','parlament.hu, niet via resellers']],
+    links:[['Parlement · bezoekerscentrum & tickets','https://www.parlament.hu/en/web/visitors'],['Hoe werkt het bezoek','https://www.budapest-trip.com/guides/hungarian-parliament-guide/']] },
+  { id:'vr3', time:'12:05', title:'Schoenen aan de Donau', ll:[47.5040,19.0450], travel:{mode:'walk', label:'5 min langs de kade'},
+    desc:'Zestig paar bronzen schoenen op de kade, voor de Joden die hier in 1944–45 werden gefusilleerd. Klein en indringend.',
+    links:[['Achtergrond van het monument','https://en.wikipedia.org/wiki/Shoes_on_the_Danube_Bank']] },
+  { id:'vr4', time:'12:30', title:'Vrijheidsplein (Szabadság tér)', ll:[47.5030,19.0505], travel:{mode:'walk', label:'7 min'},
+    desc:'Sovjetmonument, Amerikaanse ambassade en de omstreden bezettingsgedenkplaats: drie versies van de geschiedenis op één plein.',
+    long:'Loop via Vécsey utca het plein op; aan de zuidkant staat het omstreden monument voor de Duitse bezetting met het protest-tegenmonument ervoor. Vandaar is het 5 min naar de Basiliek.',
+    links:[['Szabadság tér','https://en.wikipedia.org/wiki/Liberty_Square,_Budapest']] },
+  { id:'vr5', time:'13:00', title:'Lunch bij de Basiliek', ll:[47.5022,19.0520], travel:{mode:'walk', label:'5 min'}, todo:'Reserveren bij Hungarikum',
+    desc:'Drie opties binnen 5 minuten van het plein.',
+    alts:[
+      {id:'a', title:'Első Pesti Rétesház', text:'Október 6. utca 22. Hongaarse keuken en vooral rétes (strudel) uit eigen oven. Zonder reservering meestal oké rond 13:00.', ll:[47.5022,19.0520]},
+      {id:'b', title:'Hungarikum Bisztró', text:'Steindl Imre utca 13, bij het Parlement. Goulash en paprikás zoals het hoort; reserveren verplicht, vaak weken vooraf.', ll:[47.5052,19.0490]},
+      {id:'c', title:'Kispiac Bisztró', text:'Hold utca 13, piepklein, veel vlees, lokaal publiek. Reserveren aangeraden.', ll:[47.5040,19.0515]}],
+    links:[['Első Pesti Rétesház op Google Maps','https://www.google.com/maps/search/?api=1&query=Első+Pesti+Rétesház+Október+6.+utca+22+Budapest'],['Hungarikum Bisztró op Google Maps','https://www.google.com/maps/search/?api=1&query=Hungarikum+Bisztró+Steindl+Imre+utca+13+Budapest'],['Kispiac Bisztró op Google Maps','https://www.google.com/maps/search/?api=1&query=Kispiac+Bisztró+Hold+utca+13+Budapest']] },
+  { id:'vr6', time:'14:15', title:'St.-Stefansbasiliek & koepel', ll:[47.5008,19.0540], travel:{mode:'walk', label:'3 min'},
+    desc:'De koepel (lift + trap) geeft het mooiste zicht over Pest; in november sluit het panoramaterras al om 16:30, dus niet uitstellen.',
+    long:'Kerk open tot 17:00 op weekdagen. In de kapel links achterin ligt de gemummificeerde rechterhand van koning Stefanus; een muntje doet het lichtje aan. Ticket voor kerk + koepel aan de kassa of online op bazilika.biz.',
+    facts:[['Koepel','tot 16:30 in november'],['Kerk','tot 17:00'],['Duur','± 1 u']],
+    links:[['Basiliek · officiële site & tickets','https://www.bazilika.biz/en'],['Uren & prijzen 2026','https://thebettervacation.com/budapest/st-stephens-basilica-budapest/']] },
+  { id:'vr7', time:'15:30', title:'Shoppen', ll:[47.4962,19.0522], travel:{mode:'walk', label:'5 min'},
+    desc:'Alles op loopafstand; kies een richting.',
+    alts:[
+      {id:'a', title:'Fashion Street & Váci utca', text:'Deák Ferenc utca (internationale merken) en de klassieke winkelstraat Váci utca, tot aan de markthal.', ll:[47.4962,19.0522]},
+      {id:'b', title:'Andrássy út', text:'De brede boulevard richting Opera: luxemerken, boekhandels, mooie cafés. Terug met de M1.', ll:[47.5040,19.0605]},
+      {id:'c', title:'Vörösmarty tér & Gerbeaud', text:'Minder winkels, meer koffie: het grand café Gerbeaud voor een Dobos-taart. Eventueel al de kerstmarktopbouw.', ll:[47.4960,19.0500]}],
+    links:[['Gerbeaud op Google Maps','https://www.google.com/maps/search/?api=1&query=Café+Gerbeaud+Vörösmarty+tér+Budapest']] },
+  { id:'vr8', time:'17:45', title:'Diner', ll:[47.4950,19.0560], travel:{mode:'walk', label:'5–10 min'}, todo:'Reserveren',
+    desc:'Vroeg eten, zodat de cruise om 20:00 ontspannen kan beginnen.',
+    alts:[
+      {id:'a', title:'Gerlóczy Kávéház', text:'Gerlóczy utca 1, Parijs-achtig café-restaurant op een stil pleintje. Betrouwbaar, 8 min van de pier.', ll:[47.4950,19.0560]},
+      {id:'b', title:'Belvárosi Disznótoros', text:'Károlyi utca 17. Eetbar met Hongaarse worsten en gebraad per gewicht, snel en goedkoop, geen reservering.', ll:[47.4915,19.0580]},
+      {id:'c', title:'Menza', text:'Liszt Ferenc tér 2, retro-chic, Hongaars met een knipoog. 15 min lopen of M1 → Oktogon.', ll:[47.5040,19.0640]}],
+    links:[['Gerlóczy op Google Maps','https://www.google.com/maps/search/?api=1&query=Gerlóczy+Kávéház+Budapest'],['Belvárosi Disznótoros op Google Maps','https://www.google.com/maps/search/?api=1&query=Belvárosi+Disznótoros+Károlyi+utca+17+Budapest'],['Menza op Google Maps','https://www.google.com/maps/search/?api=1&query=Menza+Liszt+Ferenc+tér+2+Budapest']] },
+  { id:'vr9', time:'20:00', title:'Avondcruise op de Donau', ll:[47.4958,19.0493], badge:'hl', travel:{mode:'walk', label:'8 min naar de pier bij Vigadó tér'}, todo:'Boeken',
+    desc:'Een uur varen tussen Margaretha-eiland en de Vrijheidsbrug, met het Parlement en de Burcht verlicht. Sightseeing met een drankje slaat een dinercruise.',
+    long:'De boten van Legenda vertrekken van pier 7 bij Vigadó tér (blauw logo), Silverline ernaast. Een uur is lang genoeg; de dinercruises duren langer en het eten is middelmatig. Trek warm aan voor het open dek.',
+    facts:[['Pier','Vigadó tér, pier 7'],['Duur','± 1 u'],['Prijs','± 4 500–6 300 Ft p.p.'],['Boeken','legenda.hu of silver-line']],
+    alts:[
+      {id:'a', title:'Legenda · Duna Legenda (sightseeing, 1 u)', text:'Audiogids in het Nederlands, drankje inbegrepen. De klassieker.'},
+      {id:'b', title:'Silverline · sightseeing met drankje', text:'Vergelijkbare route, iets kleinere boten, vaak goedkoper.'},
+      {id:'c', title:'Dinercruise 19:00 (vervangt het diner)', text:'Handig, één adres, maar reken op buffetkwaliteit. Alleen als jullie het gemak belangrijker vinden dan het eten.'}],
+    links:[['Legenda · dienstregeling','https://legenda.hu/en/timetable'],['Legenda · prijzen','https://legenda.hu/en/prices'],['Silverline op Google Maps','https://www.google.com/maps/search/?api=1&query=Silverline+Cruises+Vigadó+tér+Budapest']] }
+]},
+{ id:'za', short:'Za', date:'7 nov', title:'Zaterdag · Stadspark & New York Café', weather:'Zonnig · fris, 0–10 °C', sunset:'16:22',
+  ret:{mode:'walk', label:'15 min lopen via Rákóczi út, of M2 Blaha Lujza tér → Astoria'},
+  slots:[
+  { id:'za1', time:'09:30', title:'Grote Markthal: ontbijt & inkopen', ll:[47.4870,19.0590], travel:{mode:'walk', label:'8 min lopen'},
+    desc:'Lángos en koffie op de bovenverdieping, beneden paprika, salami en Tokaji. Om 10:30 weer buiten; zaterdag sluit de hal om 16:00 en veel kramen eerder.',
+    long:'Begane grond: groenten, vlees, pickles. Kelder: vis en de supermarkt. Bovenverdieping: eetkraampjes en souvenirs; de lángos-kraam heeft rond 9:00 nog geen rij.',
+    facts:[['Open za','06:00–16:00'],['Toegang','gratis'],['Duur','± 1 u']],
+    links:[['Markthal · openingsuren','https://piaconline.hu/nagycsarnok'],['Wat kopen, wat overslaan','https://hungaryunlocked.com/great-market-hall-budapest-guide/']] },
+  { id:'za2', time:'11:00', title:'Heldenplein', ll:[47.5150,19.0778], travel:{mode:'transit', label:'Tram 47/49 Fővám tér → Deák Ferenc tér (7 min), dan de gele M1 → Hősök tere (10 min) · ± 25 min'},
+    desc:'De M1 is de oudste metro van het continent (1896), rijd hem minstens één keer. Boven: het Millenniummonument met de zeven Magyaarse stamhoofden.',
+    links:[['Heldenplein','https://en.wikipedia.org/wiki/Heroes%27_Square_(Budapest)'],['Metro M1 (Millennium Underground)','https://en.wikipedia.org/wiki/Line_1_(Budapest_Metro)']] },
+  { id:'za3', time:'11:15', title:'Vajdahunyad-kasteel', ll:[47.5148,19.0820], travel:{mode:'walk', label:'5 min het park in'},
+    desc:'Een kasteel dat 21 Hongaarse gebouwen in één samenvat, gebouwd voor de wereldtentoonstelling van 1896. Rondje langs het meer en de binnenplaatsen is gratis.',
+    long:'Wrijf over de pen van het Anonymus-beeld op de binnenplaats, dat brengt schrijversgeluk. Binnen zit het Landbouwmuseum; de toren kan beklommen worden (apart ticket).',
+    facts:[['Binnenplaatsen','gratis'],['Museum & toren','ticket, optioneel'],['Duur','± 40 min, tot 11:55']],
+    alts:[
+      {id:'a', title:'Rondje buitenom + binnenplaatsen', text:'Gratis en het mooiste deel.'},
+      {id:'b', title:'Ook de toren op', text:'Zicht over het park en de ijsbaan in opbouw; ± 20 min extra.'}],
+    links:[['Vajdahunyad · uren & tickets','https://vajdahunyadcastle.com/opening-hours-vajdahunyad-castle-budapest'],['Landbouwmuseum','https://www.museum.hu/museum/57/Museum_and_Library_of_Hungarian_Agriculture']] },
+  { id:'za4', time:'12:00', title:'Lunch: Millennium Kávéház', ll:[47.5137,19.0825], travel:{mode:'walk', label:'5 min'}, todo:'Reserveren',
+    desc:'Tip van Amelie: historisch koffiehuis-restaurant op Olof Palme sétány 1, de buren van het House of Music. Opent om 12:00, brunchkaart en Hongaarse klassiekers.',
+    long:'Reserveer voor 12:00 (zaterdag vol), dan sta je om 13:25 aan de ingang van het House of Music ernaast. Aanraders uit de reviews: eggs benedict, de pannenkoeken en de parelhoenbouillon met truffelpasta, het huisgerecht.',
+    facts:[['Open za','12:00–21:00'],['Naar House of Music','2 min'],['Prijs','€€']],
+    alts:[
+      {id:'a', title:'Millennium Kávéház és Étterem', text:'Olof Palme sétány 1. Elegant interieur, terras onder de bomen, 4,8 op Tripadvisor; Amelie\u2019s tip.', ll:[47.5137,19.0825]},
+      {id:'d', title:'Szaletly', text:'Stefánia út 93, 10 min lopen naar de oostrand van het park. Moderne Hongaarse keuken met een Michelin-vermelding; ook een tip van Amelie. Reserveren, en reken op 1,5 u.', ll:[47.5150,19.0920]},
+      {id:'b', title:'Robinson', text:'Op een eilandje in het parkmeer, zicht op het kasteel. Netjes, iets duurder.', ll:[47.5160,19.0790]},
+      {id:'c', title:'Pántlika Bisztró', text:'Hermina út 47, retro-paviljoen uit de jaren 70 aan de rand van het park. Goedkoop, Hongaars, lokaal.', ll:[47.5168,19.0868]}],
+    links:[['Millennium Kávéház op Google Maps','https://www.google.com/maps/search/?api=1&query=Millennium+Kávéház+és+Étterem+Olof+Palme+sétány+1+Budapest'],['Millennium Kávéház op Tripadvisor','https://www.tripadvisor.be/Restaurant_Review-g274887-d21064513-Reviews-Millennium_Kavehaz_Es_Etterem-Budapest_Central_Hungary.html'],['Szaletly op Google Maps','https://www.google.com/maps/search/?api=1&query=Szaletly+Stefánia+út+93+Budapest'],['Szaletly op Tripadvisor','https://www.tripadvisor.be/Restaurant_Review-g274887-d21138051-Reviews-Szaletly-Budapest_Central_Hungary.html'],['Robinson op Google Maps','https://www.google.com/maps/search/?api=1&query=Robinson+Restaurant+Városliget+Budapest']] },
+  { id:'za5', time:'13:30', title:'House of Music', ll:[47.5142,19.0835], badge:'hl', travel:{mode:'walk', label:'3 min'}, todo:'Tijdslot boeken',
+    desc:'Het gebouw van Sou Fujimoto met het geperforeerde gouden dak. Vaste tentoonstelling "Dimensions of Sound": 2 uur met koptelefoon door de muziekgeschiedenis.',
+    long:'Toegang per tijdslot; boek online. De Sound Dome (koepel met 360°-geluid) is een apart, goedkoop ticket van 20 min en de moeite. Met een online ticket parkeer je gratis, maar dat is hier niet relevant.',
+    facts:[['Open za','10:00–18:00'],['Duur','± 2 u'],['Ticket','± 5 500 Ft, tijdslot'],['Sound Dome','apart ticket, 20 min']],
+    alts:[
+      {id:'a', title:'Vaste tentoonstelling', text:'De kern van het bezoek.'},
+      {id:'b', title:'Tentoonstelling + Sound Dome', text:'Plan de Dome aansluitend, ± 30 min extra.'}],
+    links:[['House of Music · tickets','https://zenehaza.hu/en'],['Welk ticket is welk','https://hungaryunlocked.com/house-of-music-budapest-guide/']] },
+  { id:'za6', time:'15:45', title:'Optie: Széchenyi-baden', ll:[47.5188,19.0817], badge:'opt', travel:{mode:'walk', label:'8 min door het park'},
+    desc:'Buitenbaden van 38 °C bij 5 °C buitentemperatuur, damp boven het water, oude mannen die schaken. Twee uur, alleen als jullie er zin in hebben; anders rustig terug langs Andrássy út.',
+    long:'Zwemkleding en badslippers mee, handdoek kun je huren. Ticket met kast of met cabine; online boeken scheelt de rij. Daarna M1 Széchenyi fürdő → Oktogon.',
+    facts:[['Duur','± 2 u'],['Ticket','± 12 000 Ft met kast'],['Mee','zwemkleding, slippers']],
+    alts:[
+      {id:'a', title:'Baden', text:'Het volledige programma.'},
+      {id:'b', title:'Overslaan: koffie op Liszt Ferenc tér', text:'M1 → Oktogon, terrasjes op het plein, daarna 10 min naar New York Café.', ll:[47.5045,19.0640]}],
+    links:[['Széchenyi · tickets','https://www.szechenyifurdo.hu/en']] },
+  { id:'za7', time:'18:30', title:'New York Café (diner)', ll:[47.4985,19.0700], badge:'hl', travel:{mode:'transit', label:'M1 Széchenyi fürdő → Oktogon (7 min), 10 min lopen via Erzsébet körút'}, todo:'Reserveren',
+    desc:'Gerestaureerd neorenaissance-café uit 1894, overdag een rij van 45 minuten. Met een dinerreservering (vanaf 18:00) loop je langs de rij naar binnen.',
+    long:'Reserveer via newyorkcafe.hu; bevestiging volgt binnen 24 u. Er komt 15 % service bovenop de rekening. De keuken is beter dan de reputatie, maar jullie komen voor het plafond.',
+    facts:[['Reserveren','enkel diner, vanaf 18:00'],['Service','+15 %'],['Adres','Erzsébet körút 9–11']],
+    links:[['New York Café · reserveren','https://newyorkcafe.hu/en/table-reservation/']] },
+  { id:'za8', time:'20:30', title:'Joodse wijk & ruïnebar', ll:[47.4968,19.0633], travel:{mode:'walk', label:'8 min via Dohány utca'},
+    desc:'Amelie’s terrein. Szimpla Kert is de oerruïnebar: badkuipen als sofa, Trabant als tafel. Zaterdagavond druk, maar dat hoort erbij.',
+    alts:[
+      {id:'a', title:'Szimpla Kert', text:'Kazinczy utca 14. De klassieker; vroeg gaan is minder vol.', ll:[47.4968,19.0633]},
+      {id:'b', title:'Mazel Tov', text:'Akácfa utca 47. Overdekte binnentuin, rustiger, goede cocktails en Midden-Oosterse hapjes.', ll:[47.4985,19.0655]},
+      {id:'c', title:'Gozsdu udvar', text:'Reeks binnenplaatsen vol bars en terrassen tussen Király en Dob utca; veel keuze op één plek.', ll:[47.4978,19.0610]}],
+    links:[['Szimpla Kert','https://szimpla.hu/'],['Mazel Tov op Google Maps','https://www.google.com/maps/search/?api=1&query=Mazel+Tov+Akácfa+utca+47+Budapest'],['Gozsdu udvar op Google Maps','https://www.google.com/maps/search/?api=1&query=Gozsdu+Udvar+Budapest']] }
+]},
+{ id:'zo', short:'Zo', date:'8 nov', title:'Zondag · Gellért-heuvel en afscheid', weather:'Zonnig · fris', sunset:'16:21',
+  slots:[
+  { id:'zo1', time:'09:15', title:'Uitchecken & ontbijt', ll:HOTEL.ll,
+    desc:'Eerst uitchecken (vóór 10:00) en vragen of de bagage tot 12:45 mag blijven staan, dan om 9:30 aan tafel tot 10:15.',
+    alts:[
+      {id:'a', title:'Auguszt a Múzeumkertben', text:'Naast het hotel, open vanaf 8:00.', ll:[47.4908,19.0615]},
+      {id:'m', title:'MERON Egyetem tér', text:'Kecskeméti utca 8, Amelie\u2019s tip; opent zondag om 9:00. 4 min van het hotel.', ll:[47.4906,19.0599]},
+      {id:'b', title:'Fekete', text:'Múzeum körút 5, 3 min.', ll:[47.4925,19.0610]}],
+    links:[['MERON op Google Maps','https://www.google.com/maps/search/?api=1&query=MERON+Specialty+Coffee+Brunch+Kecskeméti+utca+8+Budapest'],['Harmonia Palace op Google Maps','https://www.google.com/maps/search/?api=1&query=Harmonia+Palace+Múzeum+utca+9+Budapest']] },
+  { id:'zo2', time:'10:30', title:'Gellért-heuvel & Citadella', ll:[47.4868,19.0470], badge:'hl', travel:{mode:'walk', label:'12 min lopen over de Vrijheidsbrug, dan 25–30 min klimmen (of tram 47/49 → Szent Gellért tér voor het eerste stuk)'},
+    desc:'Het mooiste panorama van de stad, en de enige echte klim van het weekend. Anderhalf uur zonder treuzelen: om 12:00 weer beneden. Wie liever rustig doet, kiest hieronder het Nationaal Museum.',
+    long:'Vanaf Szent Gellért tér het pad omhoog langs de Gellért-waterval en de grotkerk; boven het Vrijheidsbeeld van 1947 en de nieuwe tentoonstelling in de westelijke rondeel (betalend, optioneel). Terug via de zuidkant naar de brug, 2 km in totaal.',
+    facts:[['Klim','± 100 m hoogteverschil'],['Toegang','terrassen gratis'],['Duur','± 1,5 u']],
+    alts:[
+      {id:'a', title:'Gellért-heuvel', text:'Het basisplan, nu het droog en zonnig is.'},
+      {id:'b', title:'Nationaal Museum', text:'Letterlijk naast het hotel; Hongaarse geschiedenis in een neoclassicistisch paleis. Het rustige alternatief: geen klim, geen klok.', ll:[47.4910,19.0618]},
+      {id:'c', title:'Dohány-synagoge', text:'Grootste synagoge van Europa, 15 min lopen; zondag open vanaf 10:00. Met de begraafplaats en de wilgenboom van Varga.', ll:[47.4960,19.0607]}],
+    links:[['Citadella · heropening 2026','https://dailynewshungary.com/citadella-reopening-budapest-top-panorama-free-park-exhibition'],['Nationaal Museum','https://mnm.hu/en'],['Dohány-synagoge','https://www.dohany-zsinagoga.hu/en']] },
+  { id:'zo3', time:'12:05', title:'Afscheidslunch met Amelie', ll:[47.4876,19.0640], travel:{mode:'walk', label:'Afdalen via de zuidkant, 15 min terug over de brug naar Ráday utca'}, todo:'Reserveren',
+    desc:'Ráday utca is de restaurantstraat pal naast Kálvin tér: vijf minuten van het hotel en van de bus.',
+    alts:[
+      {id:'a', title:'Vörös Postakocsi', text:'Ráday utca 15. Hongaarse klassiekers in een art-nouveau-zaal; zondagslunch is hier een traditie.', ll:[47.4876,19.0640]},
+      {id:'b', title:'Púder', text:'Ráday utca 8. Bar-bistro met kunst aan de muur, lichter en moderner.', ll:[47.4881,19.0632]},
+      {id:'c', title:'Pata Negra', text:'Kálvin tér 8, als jullie donderdag ergens anders waren.', ll:[47.4893,19.0630]}],
+    links:[['Vörös Postakocsi op Google Maps','https://www.google.com/maps/search/?api=1&query=Vörös+Postakocsi+Ráday+utca+15+Budapest'],['Púder op Google Maps','https://www.google.com/maps/search/?api=1&query=Púder+Bárszínház+Ráday+utca+8+Budapest']] },
+  { id:'zo4', time:'12:50', title:'Bagage ophalen & bus 100E', ll:[47.4893,19.0618], travel:{mode:'walk', label:'5 min naar het hotel, 3 min naar de halte'},
+    desc:'Richting luchthaven stapt de 100E op aan Kálvin tér (opstaphalte). Vertrek rond 13:00, aankomst terminal ± 13:35, vlucht 15:15.',
+    facts:[['Halte','Kálvin tér M'],['Rit','± 31 min'],['Ticket','2 200 Ft p.p., vooraf in de app']],
+    links:[['Bus 100E · haltes & frequentie','https://en.wikipedia.org/wiki/Budapest_bus_route_100E']] }
+]}
+];
+
+const BOOKINGS = [
+  {id:'b1', t:'Parlement · vr 11:00', s:'parlament.hu · EU-tarief, ID mee', url:'https://www.parlament.hu/en/web/visitors', urgent:true},
+  {id:'b2', t:'New York Café · za 18:30', s:'newyorkcafe.hu · bevestiging binnen 24 u', url:'https://newyorkcafe.hu/en/table-reservation/', urgent:true},
+  {id:'b3', t:'House of Music · za 13:30', s:'zenehaza.hu · tijdslot', url:'https://zenehaza.hu/en'},
+  {id:'b4', t:'Avondcruise · vr 20:00', s:'legenda.hu · Vigadó tér, pier 7', url:'https://legenda.hu/en/timetable'},
+  {id:'b5', t:'Diner donderdag', s:'Gettó Gulyás of je keuze in de dagkaart', url:'https://www.google.com/maps/search/?api=1&query=Gettó+Gulyás+Wesselényi+utca+18+Budapest'},
+  {id:'b6', t:'Diner vrijdag', s:'Gerlóczy of je keuze in de dagkaart', url:'https://www.google.com/maps/search/?api=1&query=Gerlóczy+Kávéház+Budapest'},
+  {id:'b9', t:'Lunch zaterdag · Millennium Kávéház 12:00', s:'Olof Palme sétány 1 · +36 20 515 7473', url:'https://www.google.com/maps/search/?api=1&query=Millennium+Kávéház+és+Étterem+Olof+Palme+sétány+1+Budapest'},
+  {id:'b7', t:'Lunch zondag', s:'Vörös Postakocsi, Ráday utca', url:'https://www.google.com/maps/search/?api=1&query=Vörös+Postakocsi+Ráday+utca+15+Budapest'},
+  {id:'b8', t:'BudapestGO: 72-uurskaart + 2× 100E', s:'start do 13:00; kaart per persoon', url:'https://bkk.hu/en/tickets-and-passes/budapestgo/'}
+];
+
+/* ================= STATE ================= */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('bp.'+k); return v===null? d : JSON.parse(v);}catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('bp.'+k, JSON.stringify(v)); }catch(e){} }
+};
+let view = 'list';         // list | map | prak
+let dayId = 'do';
+let open = null;           // id van open kaart
+let map = null, layer = null;
+
+function todayDefault(){
+  const d = new Date();
+  if (d.getFullYear()===2026 && d.getMonth()===10){
+    const m = {5:'do',6:'vr',7:'za',8:'zo'}[d.getDate()];
+    if (m) return m;
+  }
+  return 'do';
+}
+function slotState(s){
+  const a = s.alts ? (s.alts.find(x=>x.id===store.get('alt.'+s.id, s.alts[0].id)) || s.alts[0]) : null;
+  return { ll: (a && a.ll) ? a.ll : s.ll, alt:a };
+}
+function esc(t){ return String(t).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ================= AFSTANDEN & ROUTES ================= */
+function hav(a,b){ const R=6371, toR=x=>x*Math.PI/180; const dLat=toR(b[0]-a[0]), dLon=toR(b[1]-a[1]); const h=Math.sin(dLat/2)**2+Math.cos(toR(a[0]))*Math.cos(toR(b[0]))*Math.sin(dLon/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+function rkey(a,b){ return 'route.'+a.map(x=>x.toFixed(4)).join(',')+'|'+b.map(x=>x.toFixed(4)).join(','); }
+async function fetchRoute(a,b){
+  const cached = store.get(rkey(a,b), null);
+  if (cached) return cached;
+  const c = `${a[1]},${a[0]};${b[1]},${b[0]}`;
+  const urls = [
+    `https://routing.openstreetmap.de/routed-foot/route/v1/driving/${c}?overview=full&geometries=geojson`,
+    `https://router.project-osrm.org/route/v1/foot/${c}?overview=full&geometries=geojson`
+  ];
+  for (const u of urls){
+    try{
+      const r = await fetch(u); if(!r.ok) continue;
+      const j = await r.json(); if(!j.routes||!j.routes[0]) continue;
+      const out = { km: j.routes[0].distance/1000, pts: j.routes[0].geometry.coordinates.map(p=>[p[1],p[0]]) };
+      store.set(rkey(a,b), out); return out;
+    }catch(e){}
+  }
+  return null;
+}
+function legs(day){
+  const out = [];
+  let prev = null;
+  day.slots.forEach(s=>{
+    const st = slotState(s);
+    if (prev && s.travel) out.push({from:prev, to:st.ll, mode:s.travel.mode, label:s.travel.label});
+    prev = st.ll;
+  });
+  if (day.ret && prev) out.push({from:prev, to:HOTEL.ll, mode:day.ret.mode, label:day.ret.label, ret:true});
+  return out;
+}
+async function walkingKm(day){
+  let km = 0;
+  for (const l of legs(day)){
+    if (l.mode!=='walk') continue;
+    const r = store.get(rkey(l.from,l.to), null);
+    km += r ? r.km : hav(l.from,l.to)*1.3;
+  }
+  return km;
+}
+
+/* ================= RENDER ================= */
+const tabsEl = document.getElementById('tabs');
+const mainEl = document.getElementById('main');
+const prakBtn = document.getElementById('btnPrak');
+
+function renderTabs(){
+  tabsEl.innerHTML = DAYS.map(d=>`<button class="tab" role="tab" data-day="${d.id}" aria-selected="${view!=='prak' && d.id===dayId}">${d.short}<small>${d.date}</small></button>`).join('');
+  prakBtn.setAttribute('aria-pressed', view==='prak');
+}
+tabsEl.addEventListener('click', e=>{
+  const b = e.target.closest('.tab'); if(!b) return;
+  dayId = b.dataset.day; if (view==='prak') view = store.get('view','list');
+  open = null; location.hash = dayId; render(); window.scrollTo(0,0);
+});
+prakBtn.addEventListener('click', ()=>{ view = view==='prak' ? store.get('view','list') : 'prak'; location.hash = view==='prak' ? 'praktisch' : dayId; render(); window.scrollTo(0,0); });
+
+const ICON_WALK = '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l-3 7h4l-2 6M8 21l2-5M15 21l-1-5"/></svg>';
+const ICON_TRANSIT = '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M8 21l1-3M16 21l-1-3"/><circle cx="9" cy="14" r=".6"/><circle cx="15" cy="14" r=".6"/></svg>';
+const ICON_OUT = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>';
+const ICON_SUN = '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+
+function badgeHtml(s){
+  if (s.badge==='hl') return '<span class="badge hl">HOOGTEPUNT</span>';
+  if (s.badge==='today') return '<span class="badge today">ENKEL VANDAAG</span>';
+  if (s.badge==='opt') return '<span class="badge opt">OPTIE</span>';
+  return '';
+}
+
+function renderDay(day){
+  const kmNow = (function(){ let km=0; for(const l of legs(day)){ if(l.mode!=='walk') continue; const r=store.get(rkey(l.from,l.to),null); km += r? r.km : hav(l.from,l.to)*1.3; } return km; })();
+  let html = `<div class="dayhead">
+    <h2>${esc(day.title)}</h2>
+    <div class="pills">
+      <span class="pill sun">${ICON_SUN}${esc(day.weather)}</span>
+      <span class="pill" id="kmpill">${ICON_WALK}± ${kmNow.toFixed(1).replace('.',',')} km stappen</span>
+      <span class="pill">Zon onder ${day.sunset}</span>
+    </div>
+    <div class="seg" role="group" aria-label="Weergave">
+      <button id="segList" aria-pressed="${view==='list'}">Lijst</button>
+      <button id="segMap" aria-pressed="${view==='map'}">Kaart</button>
+    </div>
+  </div>`;
+
+  if (view==='list'){
+    html += '<div class="tl">';
+    day.slots.forEach((s,i)=>{
+      const st = slotState(s);
+      const title = (st.alt && st.alt.ll && s.alts[0].id!==st.alt.id && !s.badge) ? `${esc(s.title)} · ${esc(st.alt.title)}` : esc(s.title);
+      if (s.travel) html += `<div class="travel">${s.travel.mode==='walk'?ICON_WALK:ICON_TRANSIT}<span>${esc(s.travel.label)}</span></div>`;
+      const last = i===day.slots.length-1 && !day.ret;
+      const isOpen = open===s.id;
+      html += `<div class="row">
+        <div class="when"><b>${s.time}</b>${last?'':'<i></i>'}</div>
+        <div class="card ${s.badge==='hl'?'hl':''} ${s.badge==='opt'?'opt':''}">
+          <button class="card-btn" data-open="${s.id}" aria-expanded="${isOpen}">
+            <div class="ttl"><h3>${title}</h3>${badgeHtml(s)}</div>
+            <p class="desc">${esc(s.desc)}</p>
+            ${(s.alts || s.todo || (s.facts&&s.facts.length)) ? `<div class="chips">
+              ${s.facts && s.facts[0] ? `<span class="chip">${esc(s.facts[0][1])}</span>`:''}
+              ${s.alts ? `<span class="chip alt">${s.alts.length} keuzes${st.alt && st.alt.id!==s.alts[0].id ? ' · '+esc(st.alt.title) : ''}</span>`:''}
+              ${s.todo ? `<span class="chip todo">${esc(s.todo)}</span>`:''}
+            </div>`:''}
+          </button>
+          ${isOpen ? renderMore(s, st) : ''}
+        </div>
+      </div>`;
+    });
+    if (day.ret) html += `<div class="travel">${day.ret.mode==='walk'?ICON_WALK:ICON_TRANSIT}<span>Terug: ${esc(day.ret.label)}</span></div>`;
+    html += '</div>';
+  } else {
+    html += `<div class="mapwrap">
+      <div id="map" role="region" aria-label="Kaart van de dag"></div>
+      <div class="legend"><span><b></b> hotel</span><span><i></i> te voet</span><span><i class="d"></i> metro, tram of bus</span></div>
+      <div class="maplist">${day.slots.map((s,i)=>`<button class="mapitem" data-fly="${i}"><span class="num">${i+1}</span><span><b>${s.time}</b> · ${esc(s.title)}</span></button>`).join('')}</div>
+      <p class="note" id="routenote"></p>
+    </div>`;
+  }
+  mainEl.innerHTML = html;
+
+  document.getElementById('segList').onclick = ()=>{ view='list'; store.set('view','list'); render(); };
+  document.getElementById('segMap').onclick = ()=>{ view='map'; store.set('view','map'); render(); };
+
+  if (view==='list'){
+    mainEl.querySelectorAll('[data-open]').forEach(b=> b.onclick = ()=>{ open = open===b.dataset.open ? null : b.dataset.open; render(); if(open){ const el = mainEl.querySelector(`[data-open="${open}"]`); if(el) el.scrollIntoView({block:'nearest'}); } });
+    mainEl.querySelectorAll('input[data-alt]').forEach(r=> r.onchange = ()=>{ store.set('alt.'+r.dataset.alt, r.value); render(); });
+  } else {
+    buildMap(day);
+  }
+  updateKm(day);
+}
+
+function renderMore(s, st){
+  const ll = st.ll;
+  let h = '<div class="more">';
+  if (s.long) h += `<p>${esc(s.long)}</p>`;
+  if (s.facts) h += `<div class="facts">${s.facts.map(f=>`<div class="fact"><small>${esc(f[0])}</small><span>${esc(f[1])}</span></div>`).join('')}</div>`;
+  if (s.alts){
+    h += `<h4>Of liever…</h4><div class="alts">` + s.alts.map(a=>`<label class="alt ${st.alt.id===a.id?'on':''}"><input type="radio" name="alt-${s.id}" id="alt-${s.id}-${a.id}" data-alt="${s.id}" value="${a.id}" ${st.alt.id===a.id?'checked':''}><span><b>${esc(a.title)}</b><span>${esc(a.text)}</span></span></label>`).join('') + '</div>';
+  }
+  h += `<div class="links">
+    <a class="lnk nav" href="${gm(ll)}" target="_blank" rel="noopener"><span>Navigeer er naartoe (Google Maps)</span>${ICON_OUT}</a>
+    ${(s.links||[]).map(l=>`<a class="lnk" href="${l[1]}" target="_blank" rel="noopener"><span>${esc(l[0])}</span>${ICON_OUT}</a>`).join('')}
+  </div></div>`;
+  return h;
+}
+
+async function updateKm(day){
+  // probeer ontbrekende wandelroutes op te halen, dan het km-pilletje bijwerken
+  let changed = false;
+  for (const l of legs(day)){
+    if (l.mode!=='walk') continue;
+    if (!store.get(rkey(l.from,l.to),null)){ const r = await fetchRoute(l.from,l.to); if (r) changed = true; }
+  }
+  const el = document.getElementById('kmpill');
+  if (el && changed && dayId===day.id){ const km = await walkingKm(day); el.innerHTML = `${ICON_WALK}± ${km.toFixed(1).replace('.',',')} km stappen`; }
+}
+
+/* ================= KAART ================= */
+function buildMap(day){
+  if (!window.L){ const n=document.getElementById('routenote'); if(n) n.textContent='De kaartbibliotheek kon niet laden; controleer de internetverbinding.'; return; }
+  if (map){ map.remove(); map=null; }
+  map = L.map('map', {zoomControl:true, attributionControl:true});
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+  layer = L.layerGroup().addTo(map);
+  const pts = [];
+
+  // hotel
+  const hotelIcon = L.divIcon({className:'', html:'<div class="mk h">H</div>', iconSize:[30,30], iconAnchor:[15,15], popupAnchor:[0,-14]});
+  L.marker(HOTEL.ll, {icon:hotelIcon}).addTo(layer).bindPopup(`<b>${HOTEL.name}</b><br>${HOTEL.addr}`);
+  pts.push(HOTEL.ll);
+
+  day.slots.forEach((s,i)=>{
+    const st = slotState(s);
+    const icon = L.divIcon({className:'', html:`<div class="mk">${i+1}</div>`, iconSize:[30,30], iconAnchor:[15,15], popupAnchor:[0,-14]});
+    const name = st.alt && st.alt.ll ? st.alt.title : s.title;
+    L.marker(st.ll, {icon}).addTo(layer).bindPopup(`<b>${s.time} · ${esc(name)}</b><br>${esc(s.desc)}<br><a href="${gm(st.ll)}" target="_blank" rel="noopener">Navigeer</a>`);
+    pts.push(st.ll);
+  });
+  map.fitBounds(L.latLngBounds(pts).pad(0.12));
+
+  // legs
+  const note = document.getElementById('routenote');
+  const ls = legs(day);
+  let pending = 0, straight = 0;
+  ls.forEach(l=>{
+    if (l.mode==='walk'){
+      const r = store.get(rkey(l.from,l.to), null);
+      if (r){ L.polyline(r.pts, {color:'#C94A2C', weight:4, opacity:.9}).addTo(layer).bindPopup(esc(l.label)+`<br>± ${r.km.toFixed(1).replace('.',',')} km`); }
+      else {
+        const tmp = L.polyline([l.from,l.to], {color:'#C94A2C', weight:3, opacity:.5}).addTo(layer);
+        pending++; straight++;
+        fetchRoute(l.from,l.to).then(r=>{
+          pending--;
+          if (r && map){ layer.removeLayer(tmp); L.polyline(r.pts, {color:'#C94A2C', weight:4, opacity:.9}).addTo(layer).bindPopup(esc(l.label)+`<br>± ${r.km.toFixed(1).replace('.',',')} km`); straight--; }
+          if (note) note.textContent = pending>0 ? 'Wandelroutes worden opgehaald…' : (straight>0 ? 'Geen routedienst bereikbaar: rechte lijnen tonen enkel de richting. Probeer later opnieuw.' : '');
+        });
+      }
+    } else {
+      L.polyline([l.from,l.to], {color:'#2E6E7E', weight:3, dashArray:'6 8', opacity:.9}).addTo(layer).bindPopup(esc(l.label));
+    }
+  });
+  if (note) note.textContent = pending>0 ? 'Wandelroutes worden opgehaald…' : '';
+
+  mainEl.querySelectorAll('[data-fly]').forEach(b=> b.onclick = ()=>{ const s = day.slots[+b.dataset.fly]; const ll = slotState(s).ll; map.flyTo(ll, 16, {duration:.6}); layer.eachLayer(x=>{ if (x.getLatLng && x.getLatLng().equals(L.latLng(ll))) x.openPopup(); }); });
+}
+
+/* ================= PRAKTISCH ================= */
+function renderPrak(){
+  const done = store.get('book', {});
+  let h = `<div class="dayhead"><h2>Praktisch</h2></div>
+  <div class="sec"><h3>Te boeken</h3><div class="list">${BOOKINGS.map(b=>`<label class="chk ${done[b.id]?'done':''}"><input type="checkbox" id="chk-${b.id}" data-book="${b.id}" ${done[b.id]?'checked':''}><span class="t"><b>${esc(b.t)}</b><small>${esc(b.s)}</small></span>${b.urgent&&!done[b.id]?'<span class="badge hl">DRINGEND</span>':''}<a href="${b.url}" target="_blank" rel="noopener">openen</a></label>`).join('')}</div></div>
+
+  <div class="sec"><h3>Adressen</h3><div class="list">
+    <a class="addr" href="${gm(HOTEL.ll)}" target="_blank" rel="noopener"><span><b>${HOTEL.name}</b><small>${HOTEL.addr}, 1088 · M3/M4 Kálvin tér op 180 m</small></span>${ICON_OUT}</a>
+    <a class="addr" href="${gm(AMELIE.ll)}" target="_blank" rel="noopener"><span><b>${AMELIE.name}</b><small>${AMELIE.addr} · 8 min lopen van het hotel</small></span>${ICON_OUT}</a>
+    <a class="addr" href="${gmt([47.4893,19.0618])}" target="_blank" rel="noopener"><span><b>Halte 100E · Kálvin tér</b><small>Uitstappen bij aankomst, opstappen richting luchthaven</small></span>${ICON_OUT}</a>
+  </div></div>
+
+  <div class="sec"><h3>Vervoer</h3><div class="txt">
+    <p><strong>BudapestGO</strong> — app vooraf installeren, profiel aanmaken (naam, e-mail, nummer van de identiteitskaart die je bij je hebt). Koop per persoon een 72-uurskaart (5 500 Ft) met start donderdag 13:00; die loopt tot zondag 13:00.</p>
+    <p><strong>Scannen</strong> — bij elke metro-ingang de QR-code scannen vóór je de roltrap neemt (ondergronds is er geen bereik); in tram en bus bij het instappen. Zonder bevestigde scan is het bij controle een boete.</p>
+    <p><strong>100E luchthavenbus</strong> — apart ticket van 2 200 Ft p.p. in dezelfde app, niet inbegrepen in de 72-uurskaart. Elke 10 min, 31 min tot Kálvin tér.</p>
+    <p><strong>Lijnen van dit weekend</strong> — M1 geel (Stadspark), M2 rood (Astoria, Blaha), M3 blauw en M4 groen (Kálvin tér), tram 2 (Donau-oever), tram 47/49 (Fővám tér ↔ Deák), bus 16 (Burcht).</p>
+  </div></div>
+
+  <div class="sec"><h3>Goed om te weten</h3><div class="txt">
+    <p><strong>Weer</strong> — vier droge, zonnige dagen, 0 tot 10 °C. Muts en handschoenen voor het bastion bij zonsondergang en het open dek van de cruise.</p>
+    <p><strong>Betalen</strong> — kaart werkt vrijwel overal; wat forint cash voor de markthal en kleine cafés. Pin in forint, nooit in euro (dynamic currency conversion).</p>
+    <p><strong>Fooi</strong> — 10–15 % is gebruikelijk; New York Café rekent 15 % service automatisch aan.</p>
+    <p><strong>Noodnummer</strong> — 112. Apotheek met nachtdienst: Teréz Patika, Teréz körút 41.</p>
+  </div></div>`;
+  mainEl.innerHTML = h;
+  mainEl.querySelectorAll('input[data-book]').forEach(c=> c.onchange = ()=>{ const d = store.get('book',{}); d[c.dataset.book] = c.checked; store.set('book', d); renderPrak(); });
+}
+
+/* ================= BOOT ================= */
+function render(){
+  renderTabs();
+  if (view==='prak') renderPrak(); else renderDay(DAYS.find(d=>d.id===dayId));
+}
+function fromHash(){
+  const h = (location.hash||'').replace('#','');
+  if (h==='praktisch'){ view='prak'; return; }
+  if (DAYS.some(d=>d.id===h)){ dayId = h; view = store.get('view','list'); return; }
+  dayId = todayDefault(); view = store.get('view','list');
+}
+window.addEventListener('hashchange', ()=>{ fromHash(); open=null; render(); });
+fromHash(); render();
+</script>
+</body>
+</html>

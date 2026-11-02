@@ -89,7 +89,14 @@ header{position:sticky;top:0;z-index:20;background:var(--navy);color:var(--navy-
 .travel svg{flex-shrink:0;margin-top:1px}
 
 /* Open kaart */
-.more{border-top:1px solid var(--line);padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px}
+.more{border-top:1px solid var(--line);padding:0 0 16px;display:flex;flex-direction:column;gap:14px}
+.more>*:not(.photo){margin-left:16px;margin-right:16px}
+.more>.photo+*{margin-top:0}
+.more>:first-child:not(.photo){margin-top:14px}
+.photo{margin:0;display:flex;flex-direction:column;gap:4px}
+.photo img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--chip);max-width:100%}
+.photo figcaption{font-size:11px;color:var(--muted);padding:0 16px}
+.photo figcaption a{color:var(--muted)}
 .more p{margin:0;font-size:14px;line-height:1.55}
 .facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .fact{background:var(--bg);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -200,7 +207,7 @@ footer a{color:var(--teal)}
 
 <main class="wrap main" id="main"></main>
 
-<footer>Routes op de kaart: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · routering <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noopener">FOSSGIS</a>. Tijden zijn richttijden; kies gerust een alternatief, de keuze wordt op deze telefoon bewaard.</footer>
+<footer>Routes op de kaart: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · routering <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noopener">FOSSGIS</a>. Foto's: Wikimedia Commons, licentie per foto vermeld. Tijden zijn richttijden; kies gerust een alternatief, de keuze wordt op deze telefoon bewaard.</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
@@ -216,12 +223,12 @@ const DAYS = [
 { id:'do', short:'Do', date:'5 nov', title:'Donderdag · Buda in de zon', weather:'Zonnig · ± 9 °C', sunset:'16:25',
   ret:{mode:'walk', label:'5–10 min lopen terug naar het hotel'},
   slots:[
-  { id:'do1', time:'13:00', title:'Landing & bus 100E naar de stad', ll:[47.4893,19.0618],
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/100E_steht_am_Budapester_Flughafen.jpg/960px-100E_steht_am_Budapester_Flughafen.jpg', file:'File:100E steht am Budapester Flughafen.jpg', by:'Salsim5774', lic:'CC BY-SA 4.0'}, id:'do1', time:'13:00', title:'Landing & bus 100E naar de stad', ll:[47.4893,19.0618],
     desc:'Vanaf de terminal met de 100E Airport Express; uitstappen aan Kálvin tér (31 min), 3 min naar het hotel.',
     long:'Het 100E-ticket (2 200 Ft p.p.) koop je in BudapestGO en activeer je vóór het instappen. Kálvin tér is in deze richting een uitstaphalte: wie wil doorrijden tot Deák, kan dat ook, maar Kálvin ligt pal bij het hotel.',
     facts:[['Vervoer','100E · elke 10 min'],['Duur','± 31 min'],['Ticket','2 200 Ft p.p.'],['Halte','Kálvin tér M']],
     links:[['Bus 100E · dienstregeling','https://bkk.hu/en/tickets-and-passes/budapestgo/'],['Bus 100E · alle haltes','https://en.wikipedia.org/wiki/Budapest_bus_route_100E']] },
-  { id:'do2', time:'14:15', title:'Hotel: bagage droppen & snelle hap', ll:HOTEL.ll, travel:{mode:'walk', label:'3 min lopen van Kálvin tér'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Magyar_Nemzeti_M%C3%BAzeum_%C3%A9p%C3%BClete.JPG/960px-Magyar_Nemzeti_M%C3%BAzeum_%C3%A9p%C3%BClete.JPG', file:'File:Magyar Nemzeti Múzeum épülete.JPG', by:'EtelkaCsilla', lic:'CC BY-SA 3.0'}, id:'do2', time:'14:15', title:'Hotel: bagage droppen & snelle hap', ll:HOTEL.ll, travel:{mode:'walk', label:'3 min lopen van Kálvin tér'},
     desc:'Check-in vanaf 14:00. Daarna iets kleins eten in de buurt; de echte lunch vervalt vandaag.',
     long:'Hou het kort: om 15:15 willen jullie op de Burchtheuvel staan. Alles hieronder ligt binnen 5 minuten van de deur.',
     facts:[['Check-in','vanaf 14:00'],['Uitchecken zondag','vóór 10:00']],
@@ -230,7 +237,7 @@ const DAYS = [
       {id:'b', title:'Fecske Presszó', text:'Bistro op Baross utca 10, de buurt van Amelie. Snelle lunchgerechten, lokaal publiek.', ll:[47.4886,19.0652]},
       {id:'c', title:'Lángos in de Grote Markthal', text:'10 min lopen; bovenverdieping. Alleen als jullie snel zijn, de markthal komt zaterdag sowieso terug.', ll:[47.4870,19.0590]}],
     links:[['Harmonia Palace op Google Maps','https://www.google.com/maps/search/?api=1&query=Harmonia+Palace+Múzeum+utca+9+Budapest'],['Auguszt a Múzeumkertben op Google Maps','https://www.google.com/maps/search/?api=1&query=Auguszt+a+Múzeumkertben+Budapest']] },
-  { id:'do3', time:'15:15', title:'Matthiaskerk & Vissersbastion', ll:[47.5020,19.0346], badge:'hl', travel:{mode:'transit', label:'M3 Kálvin tér → Deák Ferenc tér (1 halte), daar bus 16 → Szentháromság tér · ± 25 min'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/20190502_Baszta_Rybacka_w_Budapeszcie_1029_1974_DxO.jpg/960px-20190502_Baszta_Rybacka_w_Budapeszcie_1029_1974_DxO.jpg', file:'File:20190502 Baszta Rybacka w Budapeszcie 1029 1974 DxO.jpg', by:'Jakub Hałun', lic:'CC BY-SA 4.0'}, id:'do3', time:'15:15', title:'Matthiaskerk & Vissersbastion', ll:[47.5020,19.0346], badge:'hl', travel:{mode:'transit', label:'M3 Kálvin tér → Deák Ferenc tér (1 halte), daar bus 16 → Szentháromság tér · ± 25 min'},
     desc:'Eerst de kerk (sluit 17:00), dan naar buiten voor het gouden uur: het Parlement aan de overkant kleurt mee met de zon.',
     long:'De onderste terrassen van het bastion zijn gratis en geven hetzelfde zicht; de bovenste torens kosten ± 1 700 Ft tot 19:00. Blijf tot na 16:25 voor het blauwe uur, dan gaan de lichten van het Parlement aan.',
     facts:[['Vervoer','M3 + bus 16'],['Duur','± 1,5 u'],['Kerk','tot 17:00, ticket aan de kassa'],['Bastion','gratis onder, ± 1 700 Ft boven']],
@@ -239,7 +246,7 @@ const DAYS = [
       {id:'b', title:'Met de Burchtkabelbaan (Sikló) omhoog', text:'M3 → Deák, dan te voet over de Kettingbrug naar Clark Ádám tér en met de kabelbaan omhoog. Mooi, wel een wachtrij en ± 4 000 Ft p.p.; 20 min langer.', ll:[47.4980,19.0400]},
       {id:'c', title:'Koffie bij Ruszwurm na de kerk', text:'Oudste banketbakkerij van Buda, 50 m van de kerk; krémes nemen. Bastion dan pas daarna.'}],
     links:[['Matthiaskerk · officiële site','https://matyas-templom.hu/en'],['Vissersbastion · uren & torens','https://thebettervacation.com/budapest/fishermans-bastion/'],['Burchtkabelbaan (Sikló)','https://en.wikipedia.org/wiki/Budapest_Castle_Hill_Funicular']] },
-  { id:'do4', time:'17:00', title:'Buda Castle & Kettingbrug te voet', ll:[47.4968,19.0392], travel:{mode:'walk', label:'600 m zuidwaarts door de burchtwijk'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/20190502_Zamek_w_Budapeszcie_0647_1862_DxO.jpg/960px-20190502_Zamek_w_Budapeszcie_0647_1862_DxO.jpg', file:'File:20190502 Zamek w Budapeszcie 0647 1862 DxO.jpg', by:'Jakub Hałun', lic:'CC BY-SA 4.0'}, id:'do4', time:'17:00', title:'Buda Castle & Kettingbrug te voet', ll:[47.4968,19.0392], travel:{mode:'walk', label:'600 m zuidwaarts door de burchtwijk'},
     desc:'De binnenplaatsen van het paleis zijn vrij toegankelijk; daarna afdalen naar de verlichte Kettingbrug en te voet naar Pest.',
     long:'Vanaf het terras bij de Savoyaanse ruiter (Eugenius van Savoye) heb je de hele Pest-oever voor je. Afdalen kan via de trappen naast de kabelbaan of door de Várkert Bazár. Over de brug naar Széchenyi tér, dan tram 2 langs de Donau naar Fővám tér.',
     facts:[['Toegang','binnenplaatsen gratis'],['Wandeling','± 2 km'],['Terug','tram 2 → Fővám tér']],
@@ -247,7 +254,7 @@ const DAYS = [
       {id:'a', title:'Te voet omlaag via de Várkert Bazár', text:'Monumentale trappen en tuinen aan de Donau-kant, vlak bij de brug.'},
       {id:'b', title:'Met de Sikló omlaag', text:'Als jullie de kabelbaan nog niet genomen hebben: afdalen kost minder wachttijd dan opstijgen.'}],
     links:[['Buda Castle · bezoekersinfo','https://budacastlebudapest.com'],['Várkert Bazár','https://varkertbazar.hu/en'],['Kettingbrug','https://en.wikipedia.org/wiki/Sz%C3%A9chenyi_Chain_Bridge']] },
-  { id:'do5', time:'18:30', title:'Ervin Szabó-bibliotheek', ll:[47.4894,19.0645], badge:'today', travel:{mode:'transit', label:'Kettingbrug over, tram 2 Széchenyi tér → Fővám tér (8 min), 6 min lopen'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Szab%C3%B3_Ervin_K%C3%B6nyvt%C3%A1r_%28961._sz%C3%A1m%C3%BA_m%C5%B1eml%C3%A9k%29_111.jpg/960px-Szab%C3%B3_Ervin_K%C3%B6nyvt%C3%A1r_%28961._sz%C3%A1m%C3%BA_m%C5%B1eml%C3%A9k%29_111.jpg', file:'File:Szabó Ervin Könyvtár (961. számú műemlék) 111.jpg', by:'desperado', lic:'CC BY 2.5 HU'}, id:'do5', time:'18:30', title:'Ervin Szabó-bibliotheek', ll:[47.4894,19.0645], badge:'today', travel:{mode:'transit', label:'Kettingbrug over, tram 2 Széchenyi tér → Fővám tér (8 min), 6 min lopen'},
     desc:'Neobarok paleis vol lezende studenten. Alleen op donderdag tot 20:00 open, dus vandaag of nooit.',
     long:'Toeristenticket aan de balie (± 1 500–2 000 Ft), je krijgt een papieren ticket voor de tourniquets. De mooiste zalen zijn op de verdieping: de spiegelzaal en de rookkamer met eiken lambrisering. Stil zijn, mensen werken er echt.',
     facts:[['Open','do tot 20:00'],['Ticket','± 2 000 Ft aan de balie'],['Afstand','5 min van het hotel']],
@@ -274,15 +281,15 @@ const DAYS = [
       {id:'b', title:'Fekete', text:'Múzeum körút 5, 3 min lopen. Specialty coffee, ontbijtbowls en goede eggs benedict.', ll:[47.4925,19.0610]},
       {id:'c', title:'Cirkusz Café', text:'Dob utca 25 in de Joodse wijk, 12 min lopen. Uitgebreid ontbijt, drukker.', ll:[47.4975,19.0625]}],
     links:[['MERON op Google Maps','https://www.google.com/maps/search/?api=1&query=MERON+Specialty+Coffee+Brunch+Kecskeméti+utca+8+Budapest'],['Auguszt a Múzeumkertben op Google Maps','https://www.google.com/maps/search/?api=1&query=Auguszt+a+Múzeumkertben+Budapest'],['Fekete op Google Maps','https://www.google.com/maps/search/?api=1&query=Fekete+Múzeum+körút+5+Budapest']] },
-  { id:'vr2', time:'11:00', title:'Parlement (rondleiding)', ll:[47.5076,19.0462], badge:'hl', travel:{mode:'transit', label:'6 min lopen naar Fővám tér, tram 2 langs de Donau → Kossuth Lajos tér (10 min) · ± 18 min'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/HUN-2015-Budapest-Hungarian_Parliament_%28Budapest%29_2015-01.jpg/960px-HUN-2015-Budapest-Hungarian_Parliament_%28Budapest%29_2015-01.jpg', file:'File:HUN-2015-Budapest-Hungarian Parliament (Budapest) 2015-01.jpg', by:'Godot13', lic:'CC BY-SA 4.0'}, id:'vr2', time:'11:00', title:'Parlement (rondleiding)', ll:[47.5076,19.0462], badge:'hl', travel:{mode:'transit', label:'6 min lopen naar Fővám tér, tram 2 langs de Donau → Kossuth Lajos tér (10 min) · ± 18 min'},
     desc:'Boek het slot van 11:00 en wees om 10:35 aan het bezoekerscentrum: reken 20–30 min voor de veiligheidscontrole, de rondleiding zelf duurt 45 min. Ticket op naam, identiteitskaart mee voor het EU-tarief.',
     long:'Het bezoekerscentrum zit aan de noordkant van het gebouw, onder Kossuth tér. Tram 2 is de mooiste aanloop: de hele rit kijk je op de Burcht. Bij een zitting van het parlement kan de rondleiding uitvallen; de boeking toont dan geen slot.',
     facts:[['Vervoer','tram 2 → Kossuth Lajos tér'],['Totaal','± 1,5 u incl. controle'],['Ticket','EU-tarief, ID tonen'],['Boeken','parlament.hu, niet via resellers']],
     links:[['Parlement · bezoekerscentrum & tickets','https://www.parlament.hu/en/web/visitors'],['Hoe werkt het bezoek','https://www.budapest-trip.com/guides/hungarian-parliament-guide/']] },
-  { id:'vr3', time:'12:05', title:'Schoenen aan de Donau', ll:[47.5040,19.0450], travel:{mode:'walk', label:'5 min langs de kade'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Shoes_on_the_Danube_Promenade_%28Holocaust_monument%2C_Budapest%29.jpg/960px-Shoes_on_the_Danube_Promenade_%28Holocaust_monument%2C_Budapest%29.jpg', file:'File:Shoes on the Danube Promenade (Holocaust monument, Budapest).jpg', by:'MOs810', lic:'CC BY 4.0'}, id:'vr3', time:'12:05', title:'Schoenen aan de Donau', ll:[47.5040,19.0450], travel:{mode:'walk', label:'5 min langs de kade'},
     desc:'Zestig paar bronzen schoenen op de kade, voor de Joden die hier in 1944–45 werden gefusilleerd. Klein en indringend.',
     links:[['Achtergrond van het monument','https://en.wikipedia.org/wiki/Shoes_on_the_Danube_Bank']] },
-  { id:'vr4', time:'12:30', title:'Vrijheidsplein (Szabadság tér)', ll:[47.5030,19.0505], travel:{mode:'walk', label:'7 min'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Szabads%C3%A1g_t%C3%A9r_Budapest.jpg/960px-Szabads%C3%A1g_t%C3%A9r_Budapest.jpg', file:'File:Szabadság tér Budapest.jpg', by:'Top Budapest', lic:'CC BY 2.0'}, id:'vr4', time:'12:30', title:'Vrijheidsplein (Szabadság tér)', ll:[47.5030,19.0505], travel:{mode:'walk', label:'7 min'},
     desc:'Sovjetmonument, Amerikaanse ambassade en de omstreden bezettingsgedenkplaats: drie versies van de geschiedenis op één plein.',
     long:'Loop via Vécsey utca het plein op; aan de zuidkant staat het omstreden monument voor de Duitse bezetting met het protest-tegenmonument ervoor. Vandaar is het 5 min naar de Basiliek.',
     links:[['Szabadság tér','https://en.wikipedia.org/wiki/Liberty_Square,_Budapest']] },
@@ -293,12 +300,12 @@ const DAYS = [
       {id:'b', title:'Hungarikum Bisztró', text:'Steindl Imre utca 13, bij het Parlement. Goulash en paprikás zoals het hoort; reserveren verplicht, vaak weken vooraf.', ll:[47.5052,19.0490]},
       {id:'c', title:'Kispiac Bisztró', text:'Hold utca 13, piepklein, veel vlees, lokaal publiek. Reserveren aangeraden.', ll:[47.5040,19.0515]}],
     links:[['Első Pesti Rétesház op Google Maps','https://www.google.com/maps/search/?api=1&query=Első+Pesti+Rétesház+Október+6.+utca+22+Budapest'],['Hungarikum Bisztró op Google Maps','https://www.google.com/maps/search/?api=1&query=Hungarikum+Bisztró+Steindl+Imre+utca+13+Budapest'],['Kispiac Bisztró op Google Maps','https://www.google.com/maps/search/?api=1&query=Kispiac+Bisztró+Hold+utca+13+Budapest']] },
-  { id:'vr6', time:'14:15', title:'St.-Stefansbasiliek & koepel', ll:[47.5008,19.0540], travel:{mode:'walk', label:'3 min'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Dome_of_St._Stephen%27s_Basilica_%28Budapest%29.jpg/960px-Dome_of_St._Stephen%27s_Basilica_%28Budapest%29.jpg', file:'File:Dome of St. Stephen\'s Basilica (Budapest).jpg', by:'Jules Verne Times Two', lic:'CC BY-SA 4.0'}, id:'vr6', time:'14:15', title:'St.-Stefansbasiliek & koepel', ll:[47.5008,19.0540], travel:{mode:'walk', label:'3 min'},
     desc:'De koepel (lift + trap) geeft het mooiste zicht over Pest; in november sluit het panoramaterras al om 16:30, dus niet uitstellen.',
     long:'Kerk open tot 17:00 op weekdagen. In de kapel links achterin ligt de gemummificeerde rechterhand van koning Stefanus; een muntje doet het lichtje aan. Ticket voor kerk + koepel aan de kassa of online op bazilika.biz.',
     facts:[['Koepel','tot 16:30 in november'],['Kerk','tot 17:00'],['Duur','± 1 u']],
     links:[['Basiliek · officiële site & tickets','https://www.bazilika.biz/en'],['Uren & prijzen 2026','https://thebettervacation.com/budapest/st-stephens-basilica-budapest/']] },
-  { id:'vr7', time:'15:30', title:'Shoppen', ll:[47.4962,19.0522], travel:{mode:'walk', label:'5 min'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Caf%C3%A9_Gerbeaud_Budapest.jpg/960px-Caf%C3%A9_Gerbeaud_Budapest.jpg', file:'File:Café Gerbeaud Budapest.jpg', by:'Yelkrokoyade', lic:'CC BY-SA 3.0'}, id:'vr7', time:'15:30', title:'Shoppen', ll:[47.4962,19.0522], travel:{mode:'walk', label:'5 min'},
     desc:'Alles op loopafstand; kies een richting.',
     alts:[
       {id:'a', title:'Fashion Street & Váci utca', text:'Deák Ferenc utca (internationale merken) en de klassieke winkelstraat Váci utca, tot aan de markthal.', ll:[47.4962,19.0522]},
@@ -312,7 +319,7 @@ const DAYS = [
       {id:'b', title:'Belvárosi Disznótoros', text:'Károlyi utca 17. Eetbar met Hongaarse worsten en gebraad per gewicht, snel en goedkoop, geen reservering.', ll:[47.4915,19.0580]},
       {id:'c', title:'Menza', text:'Liszt Ferenc tér 2, retro-chic, Hongaars met een knipoog. 15 min lopen of M1 → Oktogon.', ll:[47.5040,19.0640]}],
     links:[['Gerlóczy op Google Maps','https://www.google.com/maps/search/?api=1&query=Gerlóczy+Kávéház+Budapest'],['Belvárosi Disznótoros op Google Maps','https://www.google.com/maps/search/?api=1&query=Belvárosi+Disznótoros+Károlyi+utca+17+Budapest'],['Menza op Google Maps','https://www.google.com/maps/search/?api=1&query=Menza+Liszt+Ferenc+tér+2+Budapest']] },
-  { id:'vr9', time:'20:00', title:'Avondcruise op de Donau', ll:[47.4958,19.0493], badge:'hl', travel:{mode:'walk', label:'8 min naar de pier bij Vigadó tér'}, todo:'Boeken',
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Sz%C3%A9chenyi_Chain_Bridge_in_Budapest_at_night.jpg/960px-Sz%C3%A9chenyi_Chain_Bridge_in_Budapest_at_night.jpg', file:'File:Széchenyi Chain Bridge in Budapest at night.jpg', by:'Wilfredor', lic:'CC0'}, id:'vr9', time:'20:00', title:'Avondcruise op de Donau', ll:[47.4958,19.0493], badge:'hl', travel:{mode:'walk', label:'8 min naar de pier bij Vigadó tér'}, todo:'Boeken',
     desc:'Een uur varen tussen Margaretha-eiland en de Vrijheidsbrug, met het Parlement en de Burcht verlicht. Sightseeing met een drankje slaat een dinercruise.',
     long:'De boten van Legenda vertrekken van pier 7 bij Vigadó tér (blauw logo), Silverline ernaast. Een uur is lang genoeg; de dinercruises duren langer en het eten is middelmatig. Trek warm aan voor het open dek.',
     facts:[['Pier','Vigadó tér, pier 7'],['Duur','± 1 u'],['Prijs','± 4 500–6 300 Ft p.p.'],['Boeken','legenda.hu of silver-line']],
@@ -325,15 +332,15 @@ const DAYS = [
 { id:'za', short:'Za', date:'7 nov', title:'Zaterdag · Stadspark & New York Café', weather:'Zonnig · fris, 0–10 °C', sunset:'16:22',
   ret:{mode:'walk', label:'15 min lopen via Rákóczi út, of M2 Blaha Lujza tér → Astoria'},
   slots:[
-  { id:'za1', time:'09:30', title:'Grote Markthal: ontbijt & inkopen', ll:[47.4870,19.0590], travel:{mode:'walk', label:'8 min lopen'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Budapest_Gro%C3%9Fe_Markthalle_Innen_1.JPG/960px-Budapest_Gro%C3%9Fe_Markthalle_Innen_1.JPG', file:'File:Budapest Große Markthalle Innen 1.JPG', by:'Zairon', lic:'CC BY-SA 3.0'}, id:'za1', time:'09:30', title:'Grote Markthal: ontbijt & inkopen', ll:[47.4870,19.0590], travel:{mode:'walk', label:'8 min lopen'},
     desc:'Lángos en koffie op de bovenverdieping, beneden paprika, salami en Tokaji. Om 10:30 weer buiten; zaterdag sluit de hal om 16:00 en veel kramen eerder.',
     long:'Begane grond: groenten, vlees, pickles. Kelder: vis en de supermarkt. Bovenverdieping: eetkraampjes en souvenirs; de lángos-kraam heeft rond 9:00 nog geen rij.',
     facts:[['Open za','06:00–16:00'],['Toegang','gratis'],['Duur','± 1 u']],
     links:[['Markthal · openingsuren','https://piaconline.hu/nagycsarnok'],['Wat kopen, wat overslaan','https://hungaryunlocked.com/great-market-hall-budapest-guide/']] },
-  { id:'za2', time:'11:00', title:'Heldenplein', ll:[47.5150,19.0778], travel:{mode:'transit', label:'Tram 47/49 Fővám tér → Deák Ferenc tér (7 min), dan de gele M1 → Hősök tere (10 min) · ± 25 min'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Hosok_tere%2C_Budapest.jpg/960px-Hosok_tere%2C_Budapest.jpg', file:'File:Hosok tere, Budapest.jpg', by:'Omar Ansari', lic:'CC BY-SA 2.0'}, id:'za2', time:'11:00', title:'Heldenplein', ll:[47.5150,19.0778], travel:{mode:'transit', label:'Tram 47/49 Fővám tér → Deák Ferenc tér (7 min), dan de gele M1 → Hősök tere (10 min) · ± 25 min'},
     desc:'De M1 is de oudste metro van het continent (1896), rijd hem minstens één keer. Boven: het Millenniummonument met de zeven Magyaarse stamhoofden.',
     links:[['Heldenplein','https://en.wikipedia.org/wiki/Heroes%27_Square_(Budapest)'],['Metro M1 (Millennium Underground)','https://en.wikipedia.org/wiki/Line_1_(Budapest_Metro)']] },
-  { id:'za3', time:'11:15', title:'Vajdahunyad-kasteel', ll:[47.5148,19.0820], travel:{mode:'walk', label:'5 min het park in'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Vajdahunyad_v%C3%A1ra_%2816291._sz%C3%A1m%C3%BA_m%C5%B1eml%C3%A9k%29_14.jpg/960px-Vajdahunyad_v%C3%A1ra_%2816291._sz%C3%A1m%C3%BA_m%C5%B1eml%C3%A9k%29_14.jpg', file:'File:Vajdahunyad vára (16291. számú műemlék) 14.jpg', by:'Szvitek Péter', lic:'CC BY 2.5 HU'}, id:'za3', time:'11:15', title:'Vajdahunyad-kasteel', ll:[47.5148,19.0820], travel:{mode:'walk', label:'5 min het park in'},
     desc:'Een kasteel dat 21 Hongaarse gebouwen in één samenvat, gebouwd voor de wereldtentoonstelling van 1896. Rondje langs het meer en de binnenplaatsen is gratis.',
     long:'Wrijf over de pen van het Anonymus-beeld op de binnenplaats, dat brengt schrijversgeluk. Binnen zit het Landbouwmuseum; de toren kan beklommen worden (apart ticket).',
     facts:[['Binnenplaatsen','gratis'],['Museum & toren','ticket, optioneel'],['Duur','± 40 min, tot 11:55']],
@@ -351,7 +358,7 @@ const DAYS = [
       {id:'b', title:'Robinson', text:'Op een eilandje in het parkmeer, zicht op het kasteel. Netjes, iets duurder.', ll:[47.5160,19.0790]},
       {id:'c', title:'Pántlika Bisztró', text:'Hermina út 47, retro-paviljoen uit de jaren 70 aan de rand van het park. Goedkoop, Hongaars, lokaal.', ll:[47.5168,19.0868]}],
     links:[['Millennium Kávéház op Google Maps','https://www.google.com/maps/search/?api=1&query=Millennium+Kávéház+és+Étterem+Olof+Palme+sétány+1+Budapest'],['Millennium Kávéház op Tripadvisor','https://www.tripadvisor.be/Restaurant_Review-g274887-d21064513-Reviews-Millennium_Kavehaz_Es_Etterem-Budapest_Central_Hungary.html'],['Szaletly op Google Maps','https://www.google.com/maps/search/?api=1&query=Szaletly+Stefánia+út+93+Budapest'],['Szaletly op Tripadvisor','https://www.tripadvisor.be/Restaurant_Review-g274887-d21138051-Reviews-Szaletly-Budapest_Central_Hungary.html'],['Robinson op Google Maps','https://www.google.com/maps/search/?api=1&query=Robinson+Restaurant+Városliget+Budapest']] },
-  { id:'za5', time:'13:30', title:'House of Music', ll:[47.5142,19.0835], badge:'hl', travel:{mode:'walk', label:'3 min'}, todo:'Tijdslot boeken',
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/House_of_Music%2C_Budapest%2C_Hungary_13.jpg/960px-House_of_Music%2C_Budapest%2C_Hungary_13.jpg', file:'File:House of Music, Budapest, Hungary 13.jpg', by:'Lessormore', lic:'CC BY 4.0'}, id:'za5', time:'13:30', title:'House of Music', ll:[47.5142,19.0835], badge:'hl', travel:{mode:'walk', label:'3 min'}, todo:'Tijdslot boeken',
     desc:'Het gebouw van Sou Fujimoto met het geperforeerde gouden dak. Vaste tentoonstelling "Dimensions of Sound": 2 uur met koptelefoon door de muziekgeschiedenis.',
     long:'Toegang per tijdslot; boek online. De Sound Dome (koepel met 360°-geluid) is een apart, goedkoop ticket van 20 min en de moeite. Met een online ticket parkeer je gratis, maar dat is hier niet relevant.',
     facts:[['Open za','10:00–18:00'],['Duur','± 2 u'],['Ticket','± 5 500 Ft, tijdslot'],['Sound Dome','apart ticket, 20 min']],
@@ -359,7 +366,7 @@ const DAYS = [
       {id:'a', title:'Vaste tentoonstelling', text:'De kern van het bezoek.'},
       {id:'b', title:'Tentoonstelling + Sound Dome', text:'Plan de Dome aansluitend, ± 30 min extra.'}],
     links:[['House of Music · tickets','https://zenehaza.hu/en'],['Welk ticket is welk','https://hungaryunlocked.com/house-of-music-budapest-guide/']] },
-  { id:'za6', time:'15:45', title:'Optie: Széchenyi-baden', ll:[47.5188,19.0817], badge:'opt', travel:{mode:'walk', label:'8 min door het park'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Budapest_Sz%C3%A9chenyi-Bad_Au%C3%9Fenbecken_08.JPG/960px-Budapest_Sz%C3%A9chenyi-Bad_Au%C3%9Fenbecken_08.JPG', file:'File:Budapest Széchenyi-Bad Außenbecken 08.JPG', by:'Zairon', lic:'CC BY-SA 3.0'}, id:'za6', time:'15:45', title:'Optie: Széchenyi-baden', ll:[47.5188,19.0817], badge:'opt', travel:{mode:'walk', label:'8 min door het park'},
     desc:'Buitenbaden van 38 °C bij 5 °C buitentemperatuur, damp boven het water, oude mannen die schaken. Twee uur, alleen als jullie er zin in hebben; anders rustig terug langs Andrássy út.',
     long:'Zwemkleding en badslippers mee, handdoek kun je huren. Ticket met kast of met cabine; online boeken scheelt de rij. Daarna M1 Széchenyi fürdő → Oktogon.',
     facts:[['Duur','± 2 u'],['Ticket','± 12 000 Ft met kast'],['Mee','zwemkleding, slippers']],
@@ -367,12 +374,12 @@ const DAYS = [
       {id:'a', title:'Baden', text:'Het volledige programma.'},
       {id:'b', title:'Overslaan: koffie op Liszt Ferenc tér', text:'M1 → Oktogon, terrasjes op het plein, daarna 10 min naar New York Café.', ll:[47.5045,19.0640]}],
     links:[['Széchenyi · tickets','https://www.szechenyifurdo.hu/en']] },
-  { id:'za7', time:'18:30', title:'New York Café (diner)', ll:[47.4985,19.0700], badge:'hl', travel:{mode:'transit', label:'M1 Széchenyi fürdő → Oktogon (7 min), 10 min lopen via Erzsébet körút'}, todo:'Reserveren',
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Interior_of_New_York_Palace%2C_Cafe_Budapest_%288344808702%29.jpg/960px-Interior_of_New_York_Palace%2C_Cafe_Budapest_%288344808702%29.jpg', file:'File:Interior of New York Palace, Cafe Budapest (8344808702).jpg', by:'Sandy Horvath-Dori', lic:'CC BY 2.0'}, id:'za7', time:'18:30', title:'New York Café (diner)', ll:[47.4985,19.0700], badge:'hl', travel:{mode:'transit', label:'M1 Széchenyi fürdő → Oktogon (7 min), 10 min lopen via Erzsébet körút'}, todo:'Reserveren',
     desc:'Gerestaureerd neorenaissance-café uit 1894, overdag een rij van 45 minuten. Met een dinerreservering (vanaf 18:00) loop je langs de rij naar binnen.',
     long:'Reserveer via newyorkcafe.hu; bevestiging volgt binnen 24 u. Er komt 15 % service bovenop de rekening. De keuken is beter dan de reputatie, maar jullie komen voor het plafond.',
     facts:[['Reserveren','enkel diner, vanaf 18:00'],['Service','+15 %'],['Adres','Erzsébet körút 9–11']],
     links:[['New York Café · reserveren','https://newyorkcafe.hu/en/table-reservation/']] },
-  { id:'za8', time:'20:30', title:'Joodse wijk & ruïnebar', ll:[47.4968,19.0633], travel:{mode:'walk', label:'8 min via Dohány utca'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Szimpla_Kert_Budapest_1.jpg/960px-Szimpla_Kert_Budapest_1.jpg', file:'File:Szimpla Kert Budapest 1.jpg', by:'Yelkrokoyade', lic:'CC BY-SA 3.0'}, id:'za8', time:'20:30', title:'Joodse wijk & ruïnebar', ll:[47.4968,19.0633], travel:{mode:'walk', label:'8 min via Dohány utca'},
     desc:'Amelie’s terrein. Szimpla Kert is de oerruïnebar: badkuipen als sofa, Trabant als tafel. Zaterdagavond druk, maar dat hoort erbij.',
     alts:[
       {id:'a', title:'Szimpla Kert', text:'Kazinczy utca 14. De klassieker; vroeg gaan is minder vol.', ll:[47.4968,19.0633]},
@@ -389,7 +396,7 @@ const DAYS = [
       {id:'m', title:'MERON Egyetem tér', text:'Kecskeméti utca 8, Amelie\u2019s tip; opent zondag om 9:00. 4 min van het hotel.', ll:[47.4906,19.0599]},
       {id:'b', title:'Fekete', text:'Múzeum körút 5, 3 min.', ll:[47.4925,19.0610]}],
     links:[['MERON op Google Maps','https://www.google.com/maps/search/?api=1&query=MERON+Specialty+Coffee+Brunch+Kecskeméti+utca+8+Budapest'],['Harmonia Palace op Google Maps','https://www.google.com/maps/search/?api=1&query=Harmonia+Palace+Múzeum+utca+9+Budapest']] },
-  { id:'zo2', time:'10:30', title:'Gellért-heuvel & Citadella', ll:[47.4868,19.0470], badge:'hl', travel:{mode:'walk', label:'12 min lopen over de Vrijheidsbrug, dan 25–30 min klimmen (of tram 47/49 → Szent Gellért tér voor het eerste stuk)'},
+  { img:{src:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Hungarian_Parliament_Building_from_across_the_Danube_from_Gell%C3%A9rt_Hill._Budapest_sunset_%288130437015%29.jpg/960px-Hungarian_Parliament_Building_from_across_the_Danube_from_Gell%C3%A9rt_Hill._Budapest_sunset_%288130437015%29.jpg', file:'File:Hungarian Parliament Building from across the Danube from Gellért Hill. Budapest sunset (8130437015).jpg', by:'Moyan Brenn', lic:'CC BY 2.0'}, id:'zo2', time:'10:30', title:'Gellért-heuvel & Citadella', ll:[47.4868,19.0470], badge:'hl', travel:{mode:'walk', label:'12 min lopen over de Vrijheidsbrug, dan 25–30 min klimmen (of tram 47/49 → Szent Gellért tér voor het eerste stuk)'},
     desc:'Het mooiste panorama van de stad, en de enige echte klim van het weekend. Anderhalf uur zonder treuzelen: om 12:00 weer beneden. Wie liever rustig doet, kiest hieronder het Nationaal Museum.',
     long:'Vanaf Szent Gellért tér het pad omhoog langs de Gellért-waterval en de grotkerk; boven het Vrijheidsbeeld van 1947 en de nieuwe tentoonstelling in de westelijke rondeel (betalend, optioneel). Terug via de zuidkant naar de brug, 2 km in totaal.',
     facts:[['Klim','± 100 m hoogteverschil'],['Toegang','terrassen gratis'],['Duur','± 1,5 u']],
@@ -584,6 +591,7 @@ function renderDay(day){
 function renderMore(s, st){
   const ll = st.ll;
   let h = '<div class="more">';
+  if (s.img) h += `<figure class="photo"><img src="${s.img.src}" alt="${esc(s.title)}" loading="lazy" decoding="async"><figcaption>Foto: ${esc(s.img.by)} · <a href="https://commons.wikimedia.org/wiki/${encodeURIComponent(s.img.file).replace(/%3A/,':')}" target="_blank" rel="noopener">${esc(s.img.lic)}, Wikimedia Commons</a></figcaption></figure>`;
   if (s.long) h += `<p>${esc(s.long)}</p>`;
   if (s.facts) h += `<div class="facts">${s.facts.map(f=>`<div class="fact"><small>${esc(f[0])}</small><span>${esc(f[1])}</span></div>`).join('')}</div>`;
   if (s.alts){
